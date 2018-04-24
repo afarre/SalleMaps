@@ -1,6 +1,5 @@
 import com.google.gson.Gson;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.InputMismatchException;
@@ -32,8 +31,7 @@ public class SalleMaps {
                 option = menu();
                 switch (option){
                     case 1: //Importar mapa. Lectura json.
-                        System.out.println("IMPORTAR MAPA");
-                        option1();
+                        importMap();
                         jsonIntroduced = true;
                         break;
                     case 2: //Buscar ciudad. Sino existe, añadir ciudad que no existe.
@@ -65,18 +63,21 @@ public class SalleMaps {
         }
     }
 
-    private void option1() {
-        System.out.println("Introduce JSON file name (without extension).");
+    private void importMap() {
+        System.out.println("Introduce JSON file name.");
         Scanner sc = new Scanner(System.in);
-        String fileEntry = sc.nextLine() + ".json";
+        String fileEntry = sc.nextLine();
         GraphModel graphModel = null;
         if (fileEntry.endsWith("json")){
             try {
                 graphModel = new Gson().fromJson(new FileReader("graphs/" + fileEntry), GraphModel.class);
             } catch (FileNotFoundException e) {
                 System.out.println("Please introduce a valid file.\n");
-                option1();
+                importMap();
             }
+        } else {
+            System.out.println("Invalid file type. The file must be a JSON file.");
+            importMap();
         }
 
 /*
