@@ -1,4 +1,4 @@
-#Programación Avanzada y Estructura de Datos - Práctica 2: SalleMaps
+#Programación Avanzada y Estructura de Datos - Práctica 2: SalleMap
 
 **No finalizada**
 

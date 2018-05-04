@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -6,16 +7,16 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
- * Clase principal del proyecto SalleMaps.
+ * Clase principal del proyecto SalleMap.
  * Desde aquí se llaman y se utilizan todos los recursos necesarios para hacer funcionar este proyecto.
  * @author Javier Ortiz & Angel
  */
 
-public class SalleMaps {
+public class SalleMap {
 
 
     //Constructor
-    public SalleMaps (){}
+    public SalleMap(){}
 
     //Procedimientos y Funciones
 
@@ -23,7 +24,7 @@ public class SalleMaps {
      * Inicializa el programa.
      */
     public void init (){
-        System.out.println("Welcome to SalleMaps.");
+        System.out.println("Welcome to SalleMap.");
         boolean jsonIntroduced = false;
         int option = 0;
         while (option != 4){
@@ -50,7 +51,7 @@ public class SalleMaps {
                         break;
                     case 4: //Salir del programa
                         System.out.println("\nGood bye!");
-                        System.out.println("SalleMaps by Javier Ortiz & Angel Farre");
+                        System.out.println("SalleMap by Javier Ortiz & Angel Farre");
                         break;
                     default:
                         System.out.println("This option doesn't exist.\nSelect a valid option.");
@@ -64,20 +65,20 @@ public class SalleMaps {
     }
 
     private void importMap() {
-        System.out.println("Introduce JSON file name.");
+        System.out.println("Introduce JSON file name with the path ([path]/[jsonFileName].json).");
         Scanner sc = new Scanner(System.in);
         String fileEntry = sc.nextLine();
-        GraphModel graphModel = null;
+        JsonObject jsonObject = null;
         if (fileEntry.endsWith("json")){
             try {
-                graphModel = new Gson().fromJson(new FileReader("graphs/" + fileEntry), GraphModel.class);
+                jsonObject = new Gson().fromJson(new FileReader(fileEntry), JsonObject.class);
+                readJson(jsonObject);
+                System.out.println("JSON file imported correctly!");
             } catch (FileNotFoundException e) {
                 System.out.println("Please introduce a valid file.\n");
-                importMap();
             }
         } else {
             System.out.println("Invalid file type. The file must be a JSON file.");
-            importMap();
         }
 
 /*
@@ -96,6 +97,25 @@ public class SalleMaps {
         }
 */
 
+    }
+
+    private void readJson(JsonObject jsonObject) {
+        MyList cities = new MyList();
+        MyList connections = new MyList();
+
+        int sizecities = jsonObject.get("cities").getAsJsonArray().size();
+        System.out.println("Tamaño JSON:" + sizecities);
+        for (int i = 0; i < sizecities; i++){
+            CityModel citiesModel = new CityModel(jsonObject.get("cities").getAsJsonArray().get(i).getAsJsonObject());
+            cities.add(citiesModel);
+        }
+
+        int sizeconn = jsonObject.get("connections").getAsJsonArray().size();
+        for (int i = 0; i < sizeconn; i++){
+            ConnectionModel connectionModel= new ConnectionModel(jsonObject.get("connections").getAsJsonArray().get(i).getAsJsonObject());
+            connections.add(connectionModel);
+        }
+        Graph graph = new Graph(cities, connections);
     }
 
 
