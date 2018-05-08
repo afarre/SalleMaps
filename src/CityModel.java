@@ -42,4 +42,15 @@ public class CityModel {
     public double getLongitude() {
         return longitude;
     }
+
+    @Override
+    public String toString() {
+        return "CityModel{" +
+                "name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", country='" + country + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
 }

@@ -1,3 +1,6 @@
+import Model.City;
+import Network.HttpRequest;
+import Network.WSGoogleMaps;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -14,8 +17,10 @@ import java.util.Scanner;
 
 public class SalleMap {
 
+    private Graph graph;
 
     //Constructor
+
     public SalleMap(){}
 
     //Procedimientos y Funciones
@@ -39,6 +44,9 @@ public class SalleMap {
                         if (!jsonIntroduced){
                             System.out.println("You must complete option 1 before selecting this option.");
                             break;
+                        }else {
+                            Scanner sc = new Scanner(System.in);
+                            searchCity(sc.nextLine());
                         }
                         System.out.println("BUSCAR CIUDAD");
                         break;
@@ -64,6 +72,41 @@ public class SalleMap {
         }
     }
 
+    private void searchCity(String city) {
+        int size = graph.getGraph().size();
+        boolean flag = false;
+        for (int i = 0; i < size; i++){
+            Graph.Node n = (Graph.Node) graph.getGraph().getListElement(i);
+            CityModel cityModel = n.getCity();
+            if (city.equals(cityModel.getName())) {
+                flag = true;
+                cityModel.toString();
+                break;
+            }
+        }
+        if (!flag){
+            addCityToModel(city);
+        }
+    }
+
+    private void addCityToModel(String city) {
+        WSGoogleMaps.getInstance().setApiKey("AIzaSyCMG_IEevGb9kFUfR_DVgQIT0Gfqrz3S_I");
+        HttpRequest.HttpReply httpReply = new HttpRequest.HttpReply() {
+            @Override
+            public void onSuccess(String s) {
+                //ToDo: Añadir Ciudad al sistema
+                //String s = información de las ciudades en formato JSON.
+            }
+
+            @Override
+            public void onError(String s) {
+                System.out.println("We couldnt found the city.");
+            }
+        };
+        WSGoogleMaps.getInstance().geolocate(city, httpReply);
+
+    }
+
     private void importMap() {
         System.out.println("Introduce JSON file name with the path ([path]/[jsonFileName].json).");
         Scanner sc = new Scanner(System.in);
@@ -80,23 +123,6 @@ public class SalleMap {
         } else {
             System.out.println("Invalid file type. The file must be a JSON file.");
         }
-
-/*
-        for (int  i = 0; i < graphModel.getCities().size(); i++){
-            System.out.println(graphModel.getCities().get(i).getName());
-            System.out.println(graphModel.getCities().get(i).getAddress());
-            System.out.println(graphModel.getCities().get(i).getCountry());
-            System.out.println(graphModel.getCities().get(i).getLatitude());
-            System.out.println(graphModel.getCities().get(i).getLongitude());
-
-            System.out.println(graphModel.getConnections().get(i).getFrom());
-            System.out.println(graphModel.getConnections().get(i).getTo());
-            System.out.println(graphModel.getConnections().get(i).getDuration());
-            System.out.println(graphModel.getConnections().get(i).getDistance());
-            System.out.println("_____________________________");
-        }
-*/
-
     }
 
     private void readJson(JsonObject jsonObject) {
@@ -115,7 +141,7 @@ public class SalleMap {
             ConnectionModel connectionModel= new ConnectionModel(jsonObject.get("connections").getAsJsonArray().get(i).getAsJsonObject());
             connections.add(connectionModel);
         }
-        Graph graph = new Graph(cities, connections);
+        graph = new Graph(cities, connections);
     }
 
 
