@@ -15,7 +15,7 @@ public class Graph {
         }
     }
 
-    public class Node {
+    public static class Node {
         private CityModel city;
         private MyList connections;
 

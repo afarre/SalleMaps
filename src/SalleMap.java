@@ -1,9 +1,9 @@
 import Model.City;
 import Network.HttpRequest;
 import Network.WSGoogleMaps;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 
+import javax.swing.text.html.parser.Parser;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.InputMismatchException;
@@ -18,9 +18,9 @@ import java.util.Scanner;
 public class SalleMap {
 
     private Graph graph;
+    private final static String API_KEY = "AIzaSyCMG_IEevGb9kFUfR_DVgQIT0Gfqrz3S_I";
 
     //Constructor
-
     public SalleMap(){}
 
     //Procedimientos y Funciones
@@ -45,10 +45,10 @@ public class SalleMap {
                             System.out.println("You must complete option 1 before selecting this option.");
                             break;
                         }else {
+                            System.out.println("Insert city name:");
                             Scanner sc = new Scanner(System.in);
                             searchCity(sc.nextLine());
                         }
-                        System.out.println("BUSCAR CIUDAD");
                         break;
                     case 3: //Calcular ruta. Utiliza el método necesario en cada caso.
                         if (!jsonIntroduced){
@@ -90,17 +90,38 @@ public class SalleMap {
     }
 
     private void addCityToModel(String city) {
-        WSGoogleMaps.getInstance().setApiKey("AIzaSyCMG_IEevGb9kFUfR_DVgQIT0Gfqrz3S_I");
+        WSGoogleMaps.getInstance().setApiKey(API_KEY);
         HttpRequest.HttpReply httpReply = new HttpRequest.HttpReply() {
             @Override
             public void onSuccess(String s) {
+                JsonElement jelement = new JsonParser().parse(s);
+                JsonObject jobject = jelement.getAsJsonObject();
+                System.out.println(jobject);
+                CityModel cityModel = new CityModel(
+                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(0).getAsJsonObject().get("long_name").getAsString(),
+                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("formatted_address").getAsString(),
+                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(3).getAsJsonObject().get("long_name").getAsString(),
+                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lat").getAsLong(),
+                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsLong());
+                Graph.Node node = new Graph.Node(cityModel);
+                //TODO: EL NODO CON LA CIUDAD AÑADIDA CREADO. FALTA HACER LAS CONEXIONES Y AÑADIRLO AL GRAPH
+
+                ConnectionModel connectionModel = new ConnectionModel();
+                node.addConection(connectionModel);
+
+                graph.getGraph().add(node);
+
+                //Printar para ver si estan los nodos anteriores + el introducido ahora
+                for (int i = 0; i < graph.getGraph().size(); i++){
+                    Graph.Node n = (Graph.Node) graph.getGraph().getListElement(i);
+                    System.out.println("City: " + n.getCity().toString());
+                }
                 //ToDo: Añadir Ciudad al sistema
-                //String s = información de las ciudades en formato JSON.
             }
 
             @Override
             public void onError(String s) {
-                System.out.println("We couldnt found the city.");
+                System.out.println("We couldn't found the city.");
             }
         };
         WSGoogleMaps.getInstance().geolocate(city, httpReply);
@@ -130,7 +151,6 @@ public class SalleMap {
         MyList connections = new MyList();
 
         int sizecities = jsonObject.get("cities").getAsJsonArray().size();
-        System.out.println("Tamaño JSON:" + sizecities);
         for (int i = 0; i < sizecities; i++){
             CityModel citiesModel = new CityModel(jsonObject.get("cities").getAsJsonArray().get(i).getAsJsonObject());
             cities.add(citiesModel);
