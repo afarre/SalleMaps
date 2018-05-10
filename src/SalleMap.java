@@ -12,13 +12,15 @@ import java.util.Scanner;
 /**
  * Clase principal del proyecto SalleMap.
  * Desde aquí se llaman y se utilizan todos los recursos necesarios para hacer funcionar este proyecto.
- * @author Javier Ortiz & Angel
+ * @author Javier Ortiz & Angel Farre
  */
 
 public class SalleMap {
 
     private Graph graph;
     private final static String API_KEY = "AIzaSyCMG_IEevGb9kFUfR_DVgQIT0Gfqrz3S_I";
+    private final static Integer MIN_DISTANCE = 300000;
+    private final static Integer EARTH_LONG = 400750000;
 
     //Constructor
     public SalleMap(){}
@@ -44,18 +46,16 @@ public class SalleMap {
                         if (!jsonIntroduced){
                             System.out.println("You must complete option 1 before selecting this option.");
                             break;
-                        }else {
-                            System.out.println("Insert city name:");
-                            Scanner sc = new Scanner(System.in);
-                            searchCity(sc.nextLine());
                         }
+                        System.out.println("Insert city name:");
+                        Scanner sc = new Scanner(System.in);
+                        searchCity(sc.nextLine());
                         break;
                     case 3: //Calcular ruta. Utiliza el método necesario en cada caso.
                         if (!jsonIntroduced){
                             System.out.println("You must complete option 1 before selecting this option.");
                             break;
                         }
-                        System.out.println("CALCULAR RUTA");
                         break;
                     case 4: //Salir del programa
                         System.out.println("\nGood bye!");
@@ -73,14 +73,13 @@ public class SalleMap {
     }
 
     private void searchCity(String city) {
-        int size = graph.getGraph().size();
+        int size = graph.size();
         boolean flag = false;
         for (int i = 0; i < size; i++){
-            Graph.Node n = (Graph.Node) graph.getGraph().getListElement(i);
+            Node n = graph.get(i);
             CityModel cityModel = n.getCity();
-            if (city.equals(cityModel.getName())) {
+            if (city.toLowerCase().equals(cityModel.getName().toLowerCase())) {
                 flag = true;
-                cityModel.toString();
                 break;
             }
         }
@@ -96,27 +95,14 @@ public class SalleMap {
             public void onSuccess(String s) {
                 JsonElement jelement = new JsonParser().parse(s);
                 JsonObject jobject = jelement.getAsJsonObject();
-                System.out.println(jobject);
                 CityModel cityModel = new CityModel(
                         jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(0).getAsJsonObject().get("long_name").getAsString(),
                         jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("formatted_address").getAsString(),
                         jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(3).getAsJsonObject().get("long_name").getAsString(),
                         jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lat").getAsLong(),
                         jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsLong());
-                Graph.Node node = new Graph.Node(cityModel);
-                //TODO: EL NODO CON LA CIUDAD AÑADIDA CREADO. FALTA HACER LAS CONEXIONES Y AÑADIRLO AL GRAPH
-
-                ConnectionModel connectionModel = new ConnectionModel();
-                node.addConection(connectionModel);
-
-                graph.getGraph().add(node);
-
-                //Printar para ver si estan los nodos anteriores + el introducido ahora
-                for (int i = 0; i < graph.getGraph().size(); i++){
-                    Graph.Node n = (Graph.Node) graph.getGraph().getListElement(i);
-                    System.out.println("City: " + n.getCity().toString());
-                }
-                //ToDo: Añadir Ciudad al sistema
+                Node node = new Node(cityModel);
+                graph.add(node);
             }
 
             @Override
@@ -125,6 +111,60 @@ public class SalleMap {
             }
         };
         WSGoogleMaps.getInstance().geolocate(city, httpReply);
+        httpReply = new HttpRequest.HttpReply() {
+            @Override
+            public void onSuccess(String s) {
+                JsonElement jelement = new JsonParser().parse(s);
+                JsonObject jobject = jelement.getAsJsonObject();
+                int mindistance = EARTH_LONG;
+                int minvalue = 0;
+                boolean exists = false;
+                for (int i = 0; i < jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().size()-1; i++){
+                    int distance = jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(i).getAsJsonObject().get("distance").getAsJsonObject().get("value").getAsInt();
+                    if (MIN_DISTANCE > distance){
+                        graph.getLastOne().getConnections().add(new ConnectionModel (
+                                graph.getLastOne().getCity().getName(),
+                                graph.get(i).getCity().getName(),
+                                distance,
+                                jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(i).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
+                        ));
+                        graph.get(i).getConnections().add(new ConnectionModel(
+                                graph.get(i).getCity().getName(),
+                                graph.getLastOne().getCity().getName(),
+                                distance,
+                                jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(i).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
+                        ));
+                        exists = true;
+                    } else if (mindistance > distance){
+                        mindistance = distance;
+                        minvalue = i;
+                    }
+                }
+                if (!exists){
+                    graph.getLastOne().getConnections().add(new ConnectionModel (
+                            graph.getLastOne().getCity().getName(),
+                            graph.get(minvalue).getCity().getName(),
+                            mindistance,
+                            jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(minvalue).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
+                    ));
+                    graph.get(minvalue).getConnections().add(new ConnectionModel(
+                            graph.get(minvalue).getCity().getName(),
+                            graph.getLastOne().getCity().getName(),
+                            mindistance,
+                            jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(minvalue).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
+                    ));
+                }
+            }
+
+            @Override
+            public void onError(String s) {
+                System.out.println("We couldn't found the city.");
+            }
+        };
+
+        WSGoogleMaps.getInstance().distance(graph.getLastOne().getCity().getLatitude(), graph.getLastOne().getCity().getLongitude(), graph.getLats(),graph.getLongs(), httpReply);
+
+        System.out.println(graph.toString());
 
     }
 
@@ -147,8 +187,8 @@ public class SalleMap {
     }
 
     private void readJson(JsonObject jsonObject) {
-        MyList cities = new MyList();
-        MyList connections = new MyList();
+        MyList<CityModel> cities = new MyList();
+        MyList<ConnectionModel> connections = new MyList();
 
         int sizecities = jsonObject.get("cities").getAsJsonArray().size();
         for (int i = 0; i < sizecities; i++){

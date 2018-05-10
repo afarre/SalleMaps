@@ -1,50 +1,52 @@
+import java.util.AbstractList;
 import java.util.Arrays;
 
-public class MyList {
-    private Object[] list;
+public class MyList<T> extends AbstractList<T> {
+    private T[] list;
     private int numElements;
-    private final static int CAPACITY = 10;
+    private final static int INITIALCAPACITY = 10;
 
-    public MyList(Object[] content){
-        if (content.length < CAPACITY){
-            list = new Object[CAPACITY];
-        }else {
-            list = new Object[content.length];
+    public MyList(){
+        list = (T[]) new Object[INITIALCAPACITY];
+        numElements = 0;
+    }
+
+    public MyList(T[] content){
+        if (content.length < INITIALCAPACITY){
+            list = (T[]) new Object[INITIALCAPACITY];
+        } else {
+            list = (T[]) new Object[content.length];
         }
 
-        for (Object o : content) {
+        for (T o: content){
             add(o);
         }
         numElements = content.length;
     }
 
-    public MyList(Object content){
-        list = new Object[CAPACITY];
-        add(content);
+    public MyList (T e){
+        list = (T[]) new Object[INITIALCAPACITY];
+        add(e);
         numElements = 1;
     }
 
-    public MyList(){
-        list = new Object[CAPACITY];
-        numElements = 0;
-    }
-
-    public void add(Object element){
+    public boolean add (T e){
         if (list.length == numElements){
-            Object[] aux = new Object[list.length * 2];
+            T[] aux = (T[]) new Object[list.length * 2];
             System.arraycopy(list, 0, aux, 0, list.length);
             list = aux;
         }
-        list[numElements] = element;
+        list[numElements] = e;
         numElements++;
+        return true;
     }
 
-    public Object[] getList() {
+    public T get (int i){
+        return list[i];
+    }
+
+    public T[] getAll(){
         return list;
-    }
-
-    public Object getListElement(int index){
-        return list[index];
     }
 
     public int size (){
@@ -52,10 +54,10 @@ public class MyList {
     }
 
     @Override
-    public String toString() {
+    public String toString(){
         return "MyList{" +
                 "list=" + Arrays.toString(list) +
-                ", numElements=" + numElements +
-                '}';
+                ", numElements =" + numElements +
+                "}";
     }
 }

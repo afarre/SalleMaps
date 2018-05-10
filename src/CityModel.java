@@ -45,12 +45,12 @@ public class CityModel {
 
     @Override
     public String toString() {
-        return "CityModel{" +
-                "name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", country='" + country + '\'' +
-                ", latitude=" + latitude +
-                ", longitude=" + longitude +
+        return "{" +
+                "name: " + name +
+                ", address: " + address +
+                ", country: " + country +
+                ", latitude: " + latitude +
+                ", longitude: " + longitude +
                 '}';
     }
 }

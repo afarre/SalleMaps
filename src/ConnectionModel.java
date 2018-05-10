@@ -35,4 +35,14 @@ public class ConnectionModel {
     public int getDuration() {
         return duration;
     }
+
+    public String toString () {
+        return "{" +
+                "from: " + from + "," +
+                "to: " + to + "," +
+                "distance: " + distance + " meters" +
+                "duration: " + duration + " seconds" +
+                "}";
+    }
+
 }
