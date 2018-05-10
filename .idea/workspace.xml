@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d4d12a96-bf9e-4703-8e4f-b7d2841933e2" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Node.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CityModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CityModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ConnectionModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ConnectionModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Graph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MyList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MyList.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SalleMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SalleMap.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -33,8 +28,8 @@
       <file leaf-file-name="SalleMap.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/SalleMap.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="51" column="50" selection-start-line="51" selection-start-column="50" selection-end-line="51" selection-end-column="50" />
+            <state relative-caret-position="304">
+              <caret line="215" column="43" selection-start-line="215" selection-start-column="43" selection-end-line="215" selection-end-column="43" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#searchCity#0;class#SalleMap#0" />
@@ -46,21 +41,39 @@
                 <element signature="e#6888#6889#0" expanded="true" />
                 <element signature="method#importMap#0;class#SalleMap#0" />
                 <element signature="method#readJson#0;class#SalleMap#0" />
+                <element signature="method#menu#0;class#SalleMap#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Graph.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="testGraph.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/graphs/testGraph.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2276">
+              <caret line="5" column="22" lean-forward="true" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Graph.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Graph.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="21" column="4" selection-start-line="21" selection-start-column="4" selection-end-line="21" selection-end-column="4" />
+            <state relative-caret-position="163">
+              <caret line="66" selection-start-line="66" selection-end-line="66" />
               <folding>
                 <element signature="e#556#557#0" expanded="true" />
                 <element signature="e#582#583#0" expanded="true" />
+                <element signature="e#3013#3014#0" expanded="true" />
+                <element signature="e#3048#3049#0" expanded="true" />
+                <element signature="e#3078#3079#0" expanded="true" />
+                <element signature="e#3113#3114#0" expanded="true" />
+                <element signature="e#3145#3146#0" expanded="true" />
+                <element signature="e#3193#3194#0" expanded="true" />
                 <element signature="method#getLats#0;class#Graph#0" />
                 <element signature="method#getLongituds#0;class#Graph#0" />
+                <element signature="e#3686#3687#0" expanded="true" />
+                <element signature="e#3725#3726#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -69,10 +82,11 @@
       <file leaf-file-name="Node.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Node.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="23" column="58" lean-forward="true" selection-start-line="23" selection-start-column="58" selection-end-line="23" selection-end-column="58" />
+            <state relative-caret-position="187">
+              <caret line="18" selection-start-line="18" selection-end-line="18" />
               <folding>
                 <element signature="method#Node#0;class#Node#0" />
+                <element signature="e#458#459#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -99,13 +113,12 @@
       <file leaf-file-name="MyList.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/MyList.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="746">
-              <caret line="58" column="37" selection-start-line="58" selection-start-column="37" selection-end-line="58" selection-end-column="37" />
+            <state relative-caret-position="252">
+              <caret line="52" selection-start-line="52" selection-end-line="52" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#920#921#0" expanded="true" />
                 <element signature="e#947#948#0" expanded="true" />
-                <element signature="e#1188#1189#0" expanded="true" />
                 <element signature="e#1223#1224#0" expanded="true" />
               </folding>
             </state>
@@ -315,15 +328,21 @@
       <option name="project" value="LOCAL" />
       <updated>1525779817723</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Opcion 2: Acabada.&#10;Hecho grandes cambios, en algunas clases (MyList, Graph).">
+      <created>1525984765669</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1525984765670</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="18358000" />
+    <option name="totallyTimeSpent" value="24531000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -347,7 +366,7 @@
       <window_info id="UI Designer" order="3" />
       <window_info anchor="right" id="Theme Preview" order="4" />
       <window_info id="Favorites" order="3" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39959225" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.39959225" />
       <window_info anchor="bottom" id="DB Execution Console" order="7" />
       <window_info id="Designer" order="3" />
       <window_info anchor="right" id="Palette" order="3" />
@@ -388,11 +407,13 @@
     <MESSAGE value="Lectura de ficheros JSON correcta. Opcion 1 implementada." />
     <MESSAGE value="Opcion 1 acabada." />
     <MESSAGE value="Opcion 2: Empezada." />
-    <option name="LAST_COMMIT_MESSAGE" value="Opcion 2: Empezada." />
+    <MESSAGE value="Opcion 2: Acabada." />
+    <MESSAGE value="Opcion 2: Acabada.&#10;Hecho grandes cambios, en algunas clases (MyList, Graph)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Opcion 2: Acabada.&#10;Hecho grandes cambios, en algunas clases (MyList, Graph)." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="9" />
+      <option name="time" value="11" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -411,6 +432,7 @@
             <element signature="e#6888#6889#0" expanded="true" />
             <element signature="method#importMap#0;class#SalleMap#0" />
             <element signature="method#readJson#0;class#SalleMap#0" />
+            <element signature="method#menu#0;class#SalleMap#0" />
           </folding>
         </state>
       </provider>
@@ -436,8 +458,16 @@
           <folding>
             <element signature="e#556#557#0" expanded="true" />
             <element signature="e#582#583#0" expanded="true" />
+            <element signature="e#3013#3014#0" expanded="true" />
+            <element signature="e#3048#3049#0" expanded="true" />
+            <element signature="e#3078#3079#0" expanded="true" />
+            <element signature="e#3113#3114#0" expanded="true" />
+            <element signature="e#3145#3146#0" expanded="true" />
+            <element signature="e#3193#3194#0" expanded="true" />
             <element signature="method#getLats#0;class#Graph#0" />
             <element signature="method#getLongituds#0;class#Graph#0" />
+            <element signature="e#3686#3687#0" expanded="true" />
+            <element signature="e#3725#3726#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -493,6 +523,7 @@
             <element signature="e#6888#6889#0" expanded="true" />
             <element signature="method#importMap#0;class#SalleMap#0" />
             <element signature="method#readJson#0;class#SalleMap#0" />
+            <element signature="method#menu#0;class#SalleMap#0" />
           </folding>
         </state>
       </provider>
@@ -519,6 +550,7 @@
             <element signature="e#6888#6889#0" expanded="true" />
             <element signature="method#importMap#0;class#SalleMap#0" />
             <element signature="method#readJson#0;class#SalleMap#0" />
+            <element signature="method#menu#0;class#SalleMap#0" />
           </folding>
         </state>
       </provider>
@@ -568,6 +600,7 @@
             <element signature="e#6888#6889#0" expanded="true" />
             <element signature="method#importMap#0;class#SalleMap#0" />
             <element signature="method#readJson#0;class#SalleMap#0" />
+            <element signature="method#menu#0;class#SalleMap#0" />
           </folding>
         </state>
       </provider>
@@ -711,27 +744,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/graphs/testGraph.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
-          <caret line="132" column="6" lean-forward="true" selection-start-line="132" selection-start-column="6" selection-end-line="132" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Node.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="23" column="58" lean-forward="true" selection-start-line="23" selection-start-column="58" selection-end-line="23" selection-end-column="58" />
-          <folding>
-            <element signature="method#Node#0;class#Node#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -749,24 +765,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/MyList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="746">
-          <caret line="58" column="37" selection-start-line="58" selection-start-column="37" selection-end-line="58" selection-end-column="37" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#920#921#0" expanded="true" />
-            <element signature="e#947#948#0" expanded="true" />
-            <element signature="e#1188#1189#0" expanded="true" />
-            <element signature="e#1223#1224#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/SalleMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="51" column="50" selection-start-line="51" selection-start-column="50" selection-end-line="51" selection-end-column="50" />
+        <state relative-caret-position="304">
+          <caret line="215" column="43" selection-start-line="215" selection-start-column="43" selection-end-line="215" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#searchCity#0;class#SalleMap#0" />
@@ -778,20 +780,60 @@
             <element signature="e#6888#6889#0" expanded="true" />
             <element signature="method#importMap#0;class#SalleMap#0" />
             <element signature="method#readJson#0;class#SalleMap#0" />
+            <element signature="method#menu#0;class#SalleMap#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/MyList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="52" selection-start-line="52" selection-end-line="52" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#920#921#0" expanded="true" />
+            <element signature="e#947#948#0" expanded="true" />
+            <element signature="e#1223#1224#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Node.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
+          <folding>
+            <element signature="method#Node#0;class#Node#0" />
+            <element signature="e#458#459#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Graph.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="4" selection-start-line="21" selection-start-column="4" selection-end-line="21" selection-end-column="4" />
+        <state relative-caret-position="163">
+          <caret line="66" selection-start-line="66" selection-end-line="66" />
           <folding>
             <element signature="e#556#557#0" expanded="true" />
             <element signature="e#582#583#0" expanded="true" />
+            <element signature="e#3013#3014#0" expanded="true" />
+            <element signature="e#3048#3049#0" expanded="true" />
+            <element signature="e#3078#3079#0" expanded="true" />
+            <element signature="e#3113#3114#0" expanded="true" />
+            <element signature="e#3145#3146#0" expanded="true" />
+            <element signature="e#3193#3194#0" expanded="true" />
             <element signature="method#getLats#0;class#Graph#0" />
             <element signature="method#getLongituds#0;class#Graph#0" />
+            <element signature="e#3686#3687#0" expanded="true" />
+            <element signature="e#3725#3726#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/graphs/testGraph.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2276">
+          <caret line="5" column="22" lean-forward="true" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
         </state>
       </provider>
     </entry>

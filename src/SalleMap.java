@@ -56,6 +56,7 @@ public class SalleMap {
                             System.out.println("You must complete option 1 before selecting this option.");
                             break;
                         }
+                        route();
                         break;
                     case 4: //Salir del programa
                         System.out.println("\nGood bye!");
@@ -202,6 +203,19 @@ public class SalleMap {
             connections.add(connectionModel);
         }
         graph = new Graph(cities, connections);
+    }
+
+    private void route (){
+        Scanner sc = new Scanner (System.in);
+        System.out.println("Insert new rout:");
+        System.out.println("From: ");
+        String from = sc.nextLine();
+        System.out.print("To: ");
+        String to = sc.nextLine();
+        if (graph.checkCities(from, to)){
+            graph.dijkstra(from, to, true);
+        };
+
     }
 
 
