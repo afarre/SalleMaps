@@ -37,6 +37,7 @@ public class Graph {
 
     public void dijkstra (String from, String to, boolean T_NotD){
         //Inicialización
+
         MyList<String> camino = new MyList<>();
         Node nfrom = null, nto = null;
         int pfrom = 0, pto = 0;
@@ -84,9 +85,14 @@ public class Graph {
             value[pfrom] = -1;
             camino.add(graph.get(pfrom).getCity().getName());
             pfrom = plow;
+            nfrom = graph.get(pfrom);
         }
 
-        System.out.println("Camino=" + camino.toString() + to);
+        System.out.print("Camino: ");
+        for (int i = 0; i < camino.size(); i++){
+            System.out.print(camino.get(i) + ", ");
+        }
+        System.out.println(to);
         System.out.println("Value=" + value[pfrom]);
 
     }

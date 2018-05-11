@@ -4,6 +4,7 @@ import Network.WSGoogleMaps;
 import com.google.gson.*;
 
 import javax.swing.text.html.parser.Parser;
+import javax.xml.bind.SchemaOutputResolver;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.InputMismatchException;
@@ -207,14 +208,28 @@ public class SalleMap {
 
     private void route (){
         Scanner sc = new Scanner (System.in);
-        System.out.println("Insert new rout:");
+        System.out.println("1. Shorter route");
+        System.out.println("2. Fastest route");
+        System.out.println("Select one:");
+        int type = sc.nextInt();
+        sc.nextLine();
+        System.out.println("Insert new route:");
         System.out.println("From: ");
         String from = sc.nextLine();
         System.out.print("To: ");
         String to = sc.nextLine();
+        boolean T_NotD = false;
+        switch (type){
+            case 1:
+                T_NotD = false;
+                break;
+            case 2:
+                T_NotD = true;
+                break;
+        }
         if (graph.checkCities(from, to)){
-            graph.dijkstra(from, to, true);
-        };
+            graph.dijkstra(from, to, T_NotD);
+        }
 
     }
 
