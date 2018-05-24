@@ -22,13 +22,14 @@ public class Graph {
         graph.add(n);
     }
 
-    public boolean checkCities (String city1, String city2){
+    public boolean checkCities (String from, String to){
         boolean bfrom = false, bto = false;
-        for (int i = 0; i <graph.size(); i++){
-            if (city1.toLowerCase().equals(graph.get(i).getCity().getName().toLowerCase())){
+        for (int i = 0; i < graph.size(); i++){
+            //TODO: IMPLEMENTAR CON IGNORECASE Y NO TOLOWERCASE
+            if (from.toLowerCase().equals(graph.get(i).getCity().getName().toLowerCase())){
                 bfrom = true;
             }
-            if (city2.toLowerCase().equals(graph.get(i).getCity().getName().toLowerCase())){
+            if (to.toLowerCase().equals(graph.get(i).getCity().getName().toLowerCase())){
                 bto = true;
             }
         }
@@ -41,7 +42,7 @@ public class Graph {
         MyList<String> camino = new MyList<>();
         Node nfrom = null, nto = null;
         int pfrom = 0, pto = 0;
-        for (int i = 0; i <graph.size(); i++){
+        for (int i = 0; i < graph.size(); i++){
             if (from.toLowerCase().equals(graph.get(i).getCity().getName().toLowerCase())){
                 nfrom = graph.get(i);
                 pfrom = i;
@@ -84,6 +85,7 @@ public class Graph {
             }
             value[pfrom] = -1;
             camino.add(graph.get(pfrom).getCity().getName());
+            //TODO: DESMARCAR NODOS QUE NO FROMAN CAMINO MAS CORTO
             pfrom = plow;
             nfrom = graph.get(pfrom);
         }

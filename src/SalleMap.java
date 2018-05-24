@@ -23,6 +23,7 @@ public class SalleMap {
     private final static Integer MIN_DISTANCE = 300000;
     private final static Integer EARTH_LONG = 400750000;
 
+
     //Constructor
     public SalleMap(){}
 
@@ -48,6 +49,10 @@ public class SalleMap {
                             System.out.println("You must complete option 1 before selecting this option.");
                             break;
                         }
+                        int structure = 0;
+                        while (structure != 1 && structure != 2){
+                            structure = chooseStructure();
+                        }
                         System.out.println("Insert city name:");
                         Scanner sc = new Scanner(System.in);
                         searchCity(sc.nextLine());
@@ -56,6 +61,10 @@ public class SalleMap {
                         if (!jsonIntroduced){
                             System.out.println("You must complete option 1 before selecting this option.");
                             break;
+                        }
+                        structure = 0;
+                        while (structure != 1 && structure != 2){
+                            structure = chooseStructure();
                         }
                         route();
                         break;
@@ -70,8 +79,15 @@ public class SalleMap {
             }catch (InputMismatchException e){
                 System.out.println("Input mismatch");
             }
-
         }
+    }
+
+    private int chooseStructure() throws InputMismatchException{
+        System.out.println("\nChoose structure:");
+        System.out.println("\t1.Red-Black-Tree(RBT)");
+        System.out.println("\t2.Hash table");
+        Scanner sc = new Scanner(System.in);
+        return sc.nextInt();
     }
 
     private void searchCity(String city) {
@@ -228,7 +244,10 @@ public class SalleMap {
                 break;
         }
         if (graph.checkCities(from, to)){
+            //TODO: COMPROBAR SI HACE BIEN. AÑADIR PARIS Y HACER 1 Y 2 CON LUGO
             graph.dijkstra(from, to, T_NotD);
+        }else {
+            System.out.println("Error! Either origin city or destination city where not found. Please check if spelling is correct.");
         }
 
     }
@@ -243,7 +262,7 @@ public class SalleMap {
         int value;
         System.out.println("\n\t1-. Import map.");
         System.out.println("\t2-. Search city.");
-        System.out.println("\t3-. Calculate rout.");
+        System.out.println("\t3-. Calculate route.");
         System.out.println("\t4-. Shut down.");
         System.out.println("\nSelect an option:");
 
