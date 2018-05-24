@@ -1,25 +1,76 @@
-public class RedBlackTree<T> {
+public class RedBlackTree {
     private MyList<RBTNode> tree;
 
     public RedBlackTree(){
 
     }
 
-    public RedBlackTree(MyList<T> list){
+    public RedBlackTree(MyList<CityModel> list){
         tree = new MyList<>();
         for (int i = 0; i < list.size(); i++){
-            RBTNode<T> node = new RBTNode<>(list.get(i));
+            RBTNode node = new RBTNode(list.get(i));
             insert(node);
         }
     }
 
-    public void insert(RBTNode<T> node){
+    public void add (CityModel e){
+        insert(new RBTNode(e));
+    }
+
+    public void insert(RBTNode node){
         //Añadir relaciones = mirar casos y rotaciones
-        //TODO: MIRAR DONDE DEBE COLOCARSE EL SIGUIENTE NODE
+        wheregoes(node);
         tree.add(node);
         checkRotations(node);
     }
 
+    private void wheregoes (RBTNode node){
+        RBTNode first = tree.get(0);
+        boolean placed  = false;
+
+        while (!placed) {
+            if (Integer.parseInt(String.valueOf(node.getCityModel().getName().charAt(0))) -
+                    Integer.parseInt(String.valueOf(first.getCityModel().getName().charAt(0))) > 0) {
+                if (first.getRight() != null){
+                    first = first.getRight();
+                } else {
+                    first.setRight(node);
+                    node.setParent(first);
+                    placed = true;
+                }
+            } else {
+                if (first.getLeft() != null){
+                    first = first.getLeft();
+                } else {
+                    first.setLeft(node);
+                    node.setParent(first);
+                    placed = true;
+                }
+            }
+        }
+
+        if (Integer.parseInt(String.valueOf(node.getCityModel().getName().charAt(0))) -
+                Integer.parseInt(String.valueOf(first.getCityModel().getName().charAt(0))) == 0){
+            if (Integer.parseInt(String.valueOf(node.getCityModel().getName().charAt(1))) -
+                    Integer.parseInt(String.valueOf(first.getCityModel().getName().charAt(1))) >= 0) {
+                if (first.getRight() != null){
+                    first = first.getRight();
+                } else {
+                    first.setRight(node);
+                    node.setParent(first);
+                    placed = true;
+                }
+            } else {
+                if (first.getLeft() != null){
+                    first = first.getLeft();
+                } else {
+                    first.setLeft(node);
+                    node.setParent(first);
+                    placed = true;
+                }
+            }
+        }
+    }
 
     private void checkRotations(RBTNode node) {
         RBTNode parent = node.getParent();
@@ -84,15 +135,15 @@ public class RedBlackTree<T> {
         }
     }
 
-    private class RBTNode <T>{
-        private T t;
+    private class RBTNode {
+        private CityModel cm;
         private byte colour; //0 = Red, 1 = Black
         private RBTNode right;
         private RBTNode left;
         private RBTNode parent;
 
-        public RBTNode (T t){
-            this.t = t;
+        public RBTNode (CityModel cm){
+            this.cm = cm;
             colour = 0;
             right = null;
             left = null;
@@ -129,6 +180,10 @@ public class RedBlackTree<T> {
 
         public RBTNode getParent() {
             return parent;
+        }
+
+        public CityModel getCityModel() {
+            return cm;
         }
     }
 }
