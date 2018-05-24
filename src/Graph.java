@@ -39,7 +39,6 @@ public class Graph {
     public void dijkstra (String from, String to, boolean T_NotD){
         //Inicialización
 
-        MyList<String> camino = new MyList<>();
         Node nfrom = null, nto = null;
         int pfrom = 0, pto = 0;
         for (int i = 0; i < graph.size(); i++){
@@ -57,6 +56,8 @@ public class Graph {
             value[i] = EARTH_LONG;
         }
         value[pfrom] = 0;
+        int[] way = new int [graph.size()];
+        way[pfrom] = -1;
 
         //Dijkstra
 
@@ -70,10 +71,12 @@ public class Graph {
                             if (T_NotD) {
                                 if (value[i] > nfrom.getConnections().get(j).getDuration() + value[pfrom]) {
                                     value[i] = nfrom.getConnections().get(j).getDuration() + value[pfrom];
+                                    way[i] = pfrom;
                                 }
                             } else {
                                 if (value[i] > nfrom.getConnections().get(j).getDistance() + value[pfrom]) {
                                     value[i] = nfrom.getConnections().get(j).getDistance() + value[pfrom];
+                                    way[i] = pfrom;
                                 }
                             }
                         }
@@ -84,17 +87,21 @@ public class Graph {
                 }
             }
             value[pfrom] = -1;
-            camino.add(graph.get(pfrom).getCity().getName());
-            //TODO: DESMARCAR NODOS QUE NO FROMAN CAMINO MAS CORTO
             pfrom = plow;
             nfrom = graph.get(pfrom);
         }
 
         System.out.print("Camino: ");
-        for (int i = 0; i < camino.size(); i++){
-            System.out.print(camino.get(i) + ", ");
+        boolean finish = false;
+        String stringway = graph.get(pto).getCity().getName();
+        while  (!finish){
+            pto = way[pto];
+            stringway = stringway + ", " + graph.get(pto).getCity().getName();
+            if (way[pto] == -1){
+                finish = true;
+            }
         }
-        System.out.println(to);
+        System.out.println(stringway);
         System.out.println("Value=" + value[pfrom]);
 
     }
