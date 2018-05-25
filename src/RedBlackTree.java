@@ -8,12 +8,12 @@ public class RedBlackTree {
     public RedBlackTree(MyList<Node> list){
         tree = new MyList<>();
         for (int i = 0; i < list.size(); i++){
-            RBTNode node = new RBTNode(list.get(i).getCity());
+            RBTNode node = new RBTNode(list.get(i));
             insert(node);
         }
     }
 
-    public void add (CityModel e){
+    public void add (Node e){
         insert(new RBTNode(e));
     }
 
@@ -22,6 +22,11 @@ public class RedBlackTree {
         wheregoes(node);
         tree.add(node);
         //checkRotations(node);
+    }
+
+    private int nameToInt(Node n){
+        String name = n.getCity().getName().toLowerCase();
+        return (int) name.charAt(0) * 4 + (int) name.charAt(1) * 2 +(int) name.charAt(2);
     }
 
     private void wheregoes (RBTNode node){
@@ -33,9 +38,8 @@ public class RedBlackTree {
         }
 
         while (!placed) {
-            if ((int)(node.getCityModel().getName().charAt(0)) -
-                    (int)(first.getCityModel().getName().charAt(0)) > 0) {
-                if (first.getRight() != null){
+            if (nameToInt(node.getNode()) >= nameToInt(first.getNode())) {
+                if (first.getRight() != null) {
                     first = first.getRight();
                 } else {
                     first.setRight(node);
@@ -43,33 +47,12 @@ public class RedBlackTree {
                     placed = true;
                 }
             } else {
-                if (first.getLeft() != null){
+                if (first.getLeft() != null) {
                     first = first.getLeft();
                 } else {
                     first.setLeft(node);
                     node.setParent(first);
                     placed = true;
-                }
-            }
-            if ((int)(node.getCityModel().getName().charAt(0)) -
-                    (int)(first.getCityModel().getName().charAt(0)) == 0){
-                if ((int)(node.getCityModel().getName().charAt(1)) -
-                        (int)(first.getCityModel().getName().charAt(1)) >= 0) {
-                    if (first.getRight() != null){
-                        first = first.getRight();
-                    } else {
-                        first.setRight(node);
-                        node.setParent(first);
-                        placed = true;
-                    }
-                } else {
-                    if (first.getLeft() != null){
-                        first = first.getLeft();
-                    } else {
-                        first.setLeft(node);
-                        node.setParent(first);
-                        placed = true;
-                    }
                 }
             }
         }
@@ -141,43 +124,23 @@ public class RedBlackTree {
         }
     }
 
-    public boolean searchCity(String city) {
+    public boolean searchCity(Node node) {
         RBTNode first = tree.get(0);
         while (true) {
-            if (city.equals(first.getCityModel().getName())){
+            if (node.getCity().getName().equals(first.getNode().getCity().getName())){
                 return true;
             }
-
-            if ((int)(city.charAt(0)) -
-                    (int)(first.getCityModel().getName().charAt(0)) > 0) {
-                if (first.getRight() != null){
+            if (nameToInt(node) >= nameToInt(first.getNode())) {
+                if (first.getRight() != null) {
                     first = first.getRight();
-                }else {
+                } else {
                     return false;
                 }
             } else {
-                if (first.getLeft() != null){
+                if (first.getLeft() != null) {
                     first = first.getLeft();
-                }else {
-                    return false;
-                }
-            }
-
-            if ((int)(city.charAt(0)) -
-                    (int)(first.getCityModel().getName().charAt(0)) == 0){
-                if ((int)(city.charAt(1)) -
-                        (int)(first.getCityModel().getName().charAt(1)) >= 0) {
-                    if (first.getRight() != null){
-                        first = first.getRight();
-                    } else {
-                        return false;
-                    }
                 } else {
-                    if (first.getLeft() != null){
-                        first = first.getLeft();
-                    } else {
-                        return false;
-                    }
+                    return false;
                 }
             }
             return false;
@@ -188,15 +151,25 @@ public class RedBlackTree {
         return false;
     }
 
+    public void calculateRoute(String from, String to, int type) {
+        if (type == 1){
+            //shortest route
+
+        }else if (type == 2){
+            //fastest route
+
+        }
+    }
+
     private class RBTNode {
-        private CityModel cm;
+        private Node node;
         private byte colour; //0 = Red, 1 = Black
         private RBTNode right;
         private RBTNode left;
         private RBTNode parent;
 
-        public RBTNode (CityModel cm){
-            this.cm = cm;
+        public RBTNode (Node node){
+            this.node = node;
             colour = 0;
             right = null;
             left = null;
@@ -235,8 +208,8 @@ public class RedBlackTree {
             return parent;
         }
 
-        public CityModel getCityModel() {
-            return cm;
+        public Node getNode() {
+            return node;
         }
     }
 }

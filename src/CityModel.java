@@ -7,7 +7,7 @@ public class CityModel {
     private double latitude;
     private double longitude;
 
-    public CityModel(String name, String address, String country, long latitude, long longitude){
+    public CityModel(String name, String address, String country, double latitude, double longitude){
         this.name = name;
         this.address = address;
         this.country = country;

@@ -126,13 +126,14 @@ public class SalleMap {
         if (!rbt.searchRoute(from, to, type)){
             System.out.println("No route found");
         }else {
+            rbt.calculateRoute(from, to, type);
             //TODO: SHOW ROUTE INFO
         }
     }
 
     private void searchCityHash(String city) {
         if (!hash.searchCity(city)){
-            addCityToModel(city);
+            addCityToModel(city, 2);
             hash.add(city, graph.getLastOne().getCity());
             //TODO: INFORM CITY ADDED
         }else {
@@ -141,20 +142,40 @@ public class SalleMap {
     }
 
     private void searchCityRBT(String city) {
-        if (!rbt.searchCity(city)){
-            addCityToModel(city);
-            rbt.add(graph.getLastOne().getCity());
-            //TODO: INFORM CITY ADDED
-        }else {
-            //TODO: RETURN CITY INFO
-        }
+        WSGoogleMaps.getInstance().setApiKey(API_KEY);
+        HttpRequest.HttpReply httpReply = new HttpRequest.HttpReply() {
+            @Override
+            public void onSuccess(String s) {
+                JsonElement jelement = new JsonParser().parse(s);
+                JsonObject jobject = jelement.getAsJsonObject();
+                CityModel cityModel = new CityModel(
+                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(0).getAsJsonObject().get("long_name").getAsString(),
+                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("formatted_address").getAsString(),
+                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(3).getAsJsonObject().get("long_name").getAsString(),
+                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lat").getAsLong(),
+                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsLong());
+                Node node = new Node(cityModel);
+                if (!rbt.searchCity(node)) {
+                    addCityToModel(city, 1);
+                    System.out.println("City added to system.");
+                } else {
+                    System.out.println("City name: " + node.getCity().getName());
+                    System.out.println("Country code: ");
+                }
+            }
+
+            @Override
+            public void onError(String s) {
+
+            }
+        };
     }
 
     private int chooseStructure() throws InputMismatchException{
         System.out.println("\nChoose structure:");
         System.out.println("\t1.Red-Black-Tree(RBT)");
         System.out.println("\t2.Hash table");
-        System.out.println("\t3. No optimization");
+        System.out.println("\t3.No optimization");
         Scanner sc = new Scanner(System.in);
         return sc.nextInt();
     }
@@ -171,11 +192,11 @@ public class SalleMap {
             }
         }
         if (!flag){
-            addCityToModel(city);
+            addCityToModel(city, 0);
         }
     }
 
-    private void addCityToModel(String city) {
+    private void addCityToModel(String city, int option) {
         WSGoogleMaps.getInstance().setApiKey(API_KEY);
         HttpRequest.HttpReply httpReply = new HttpRequest.HttpReply() {
             @Override
@@ -186,10 +207,22 @@ public class SalleMap {
                         jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(0).getAsJsonObject().get("long_name").getAsString(),
                         jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("formatted_address").getAsString(),
                         jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(3).getAsJsonObject().get("long_name").getAsString(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lat").getAsLong(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsLong());
+                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lat").getAsDouble(),
+                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsDouble());
                 Node node = new Node(cityModel);
-                graph.add(node);
+                System.out.println("lat: " + cityModel.getLatitude());
+                System.out.println("lon: " + cityModel.getLongitude());
+                switch (option){
+                    case 0:
+                        graph.add(node);
+                        break;
+                    case 1:
+                        rbt.add(node);
+                        break;
+                    case 2:
+                        //hash.add(ci);
+                        break;
+                }
             }
 
             @Override
@@ -197,10 +230,34 @@ public class SalleMap {
                 System.out.println("We couldn't found the city.");
             }
         };
+
         WSGoogleMaps.getInstance().geolocate(city, httpReply);
         httpReply = new HttpRequest.HttpReply() {
             @Override
             public void onSuccess(String s) {
+                switch (option){
+                    case 0:
+                        addConnectionToGraph(s);
+                        break;
+                    case 1:
+                        addConnectionToRBT(s);
+                        break;
+                    case 2:
+                        addConnectionToHash(s);
+                        break;
+                }
+
+            }
+
+            private void addConnectionToHash(String s) {
+                //TODO: INSERTAR AL HASH
+            }
+
+            private void addConnectionToRBT(String s) {
+                //TODO: INSERTAR AL RBT
+            }
+
+            private void addConnectionToGraph(String s) {
                 JsonElement jelement = new JsonParser().parse(s);
                 JsonObject jobject = jelement.getAsJsonObject();
                 int mindistance = EARTH_LONG;
@@ -228,6 +285,7 @@ public class SalleMap {
                     }
                 }
                 if (!exists){
+                    System.out.println("aux: " + graph.getLastOne());
                     graph.getLastOne().getConnections().add(new ConnectionModel (
                             graph.getLastOne().getCity().getName(),
                             graph.get(minvalue).getCity().getName(),
