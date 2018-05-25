@@ -1,10 +1,7 @@
-import Model.City;
 import Network.HttpRequest;
 import Network.WSGoogleMaps;
 import com.google.gson.*;
 
-import javax.swing.text.html.parser.Parser;
-import javax.xml.bind.SchemaOutputResolver;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.InputMismatchException;
@@ -19,6 +16,8 @@ import java.util.Scanner;
 public class SalleMap {
 
     private Graph graph;
+    private HashList hash;
+    private RedBlackTree rbt;
     private final static String API_KEY = "AIzaSyCMG_IEevGb9kFUfR_DVgQIT0Gfqrz3S_I";
     private final static Integer MIN_DISTANCE = 300000;
     private final static Integer EARTH_LONG = 400750000;
@@ -42,6 +41,8 @@ public class SalleMap {
                 switch (option){
                     case 1: //Importar mapa. Lectura json.
                         importMap();
+                        hash = new HashList(graph.getList());
+                        rbt = new RedBlackTree(graph.getList());
                         jsonIntroduced = true;
                         break;
                     case 2: //Buscar ciudad. Sino existe, añadir ciudad que no existe.
@@ -50,12 +51,22 @@ public class SalleMap {
                             break;
                         }
                         int structure = 0;
-                        while (structure != 1 && structure != 2){
+                        while (structure != 1 && structure != 2 && structure != 3){
                             structure = chooseStructure();
                         }
                         System.out.println("Insert city name:");
                         Scanner sc = new Scanner(System.in);
-                        searchCity(sc.nextLine());
+                        switch (structure){
+                            case 1:
+                                searchCityRBT(sc.nextLine());
+                                break;
+                            case 2:
+                                searchCityHash(sc.nextLine());
+                                break;
+                            case 3:
+                                searchCity(sc.nextLine());
+                                break;
+                        }
                         break;
                     case 3: //Calcular ruta. Utiliza el método necesario en cada caso.
                         if (!jsonIntroduced){
@@ -63,10 +74,31 @@ public class SalleMap {
                             break;
                         }
                         structure = 0;
-                        while (structure != 1 && structure != 2){
+                        while (structure != 1 && structure != 2 && structure != 3){
                             structure = chooseStructure();
                         }
-                        route();
+                        sc = new Scanner (System.in);
+                        System.out.println("1. Shorter route");
+                        System.out.println("2. Fastest route");
+                        System.out.println("Select one:");
+                        int type = sc.nextInt();
+                        sc.nextLine();
+                        System.out.println("Insert new route:");
+                        System.out.println("From: ");
+                        String from = sc.nextLine();
+                        System.out.print("To: ");
+                        String to = sc.nextLine();
+                        switch (structure){
+                            case 1:
+                                calculateRouteRBT(from, to, type);
+                                break;
+                            case 2:
+                                calculateRouteHash(from, to ,type);
+                                break;
+                            case 3:
+                                route(from, to, type);
+                                break;
+                        }
                         break;
                     case 4: //Salir del programa
                         System.out.println("\nGood bye!");
@@ -82,10 +114,47 @@ public class SalleMap {
         }
     }
 
+    private void calculateRouteHash(String from, String to, int type) {
+        if (!rbt.searchRoute(from, to, type)){
+            System.out.println("No route found");
+        }else {
+            //TODO: SHOW ROUTE INFO
+        }
+    }
+
+    private void calculateRouteRBT(String from, String to, int type) {
+        if (!rbt.searchRoute(from, to, type)){
+            System.out.println("No route found");
+        }else {
+            //TODO: SHOW ROUTE INFO
+        }
+    }
+
+    private void searchCityHash(String city) {
+        if (!hash.searchCity(city)){
+            addCityToModel(city);
+            hash.add(city, graph.getLastOne().getCity());
+            //TODO: INFORM CITY ADDED
+        }else {
+            //TODO: RETURN CITY INFO
+        }
+    }
+
+    private void searchCityRBT(String city) {
+        if (!rbt.searchCity(city)){
+            addCityToModel(city);
+            rbt.add(graph.getLastOne().getCity());
+            //TODO: INFORM CITY ADDED
+        }else {
+            //TODO: RETURN CITY INFO
+        }
+    }
+
     private int chooseStructure() throws InputMismatchException{
         System.out.println("\nChoose structure:");
         System.out.println("\t1.Red-Black-Tree(RBT)");
         System.out.println("\t2.Hash table");
+        System.out.println("\t3. No optimization");
         Scanner sc = new Scanner(System.in);
         return sc.nextInt();
     }
@@ -222,18 +291,7 @@ public class SalleMap {
         graph = new Graph(cities, connections);
     }
 
-    private void route (){
-        Scanner sc = new Scanner (System.in);
-        System.out.println("1. Shorter route");
-        System.out.println("2. Fastest route");
-        System.out.println("Select one:");
-        int type = sc.nextInt();
-        sc.nextLine();
-        System.out.println("Insert new route:");
-        System.out.println("From: ");
-        String from = sc.nextLine();
-        System.out.print("To: ");
-        String to = sc.nextLine();
+    private void route(String from, String to, int type){
         boolean T_NotD = false;
         switch (type){
             case 1:

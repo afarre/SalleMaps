@@ -5,10 +5,10 @@ public class RedBlackTree {
 
     }
 
-    public RedBlackTree(MyList<CityModel> list){
+    public RedBlackTree(MyList<Node> list){
         tree = new MyList<>();
         for (int i = 0; i < list.size(); i++){
-            RBTNode node = new RBTNode(list.get(i));
+            RBTNode node = new RBTNode(list.get(i).getCity());
             insert(node);
         }
     }
@@ -91,7 +91,7 @@ public class RedBlackTree {
             checkRotations(grandDad);
             checkRotations(parent);
         }
-        if (!(grandDad.getColour() == 1)){
+        if (uncle == null){
 
             //caso 2a:
             if (grandDad.getColour() == 1 && parent.getRight().equals(node) && uncle.getLeft().equals(parent)){
@@ -133,6 +133,53 @@ public class RedBlackTree {
             //el padrí es null per lo que es un node fulla
             System.out.println("Es un node fulla.");
         }
+    }
+
+    public boolean searchCity(String city) {
+        RBTNode first = tree.get(0);
+        while (true) {
+            if (city.equals(first.getCityModel().getName())){
+                return true;
+            }
+
+            if (Integer.parseInt(String.valueOf(city.charAt(0))) -
+                    Integer.parseInt(String.valueOf(first.getCityModel().getName().charAt(0))) > 0) {
+                if (first.getRight() != null){
+                    first = first.getRight();
+                }else {
+                    return false;
+                }
+            } else {
+                if (first.getLeft() != null){
+                    first = first.getLeft();
+                }else {
+                    return false;
+                }
+            }
+
+            if (Integer.parseInt(String.valueOf(city.charAt(0))) -
+                    Integer.parseInt(String.valueOf(first.getCityModel().getName().charAt(0))) == 0){
+                if (Integer.parseInt(String.valueOf(city.charAt(1))) -
+                        Integer.parseInt(String.valueOf(first.getCityModel().getName().charAt(1))) >= 0) {
+                    if (first.getRight() != null){
+                        first = first.getRight();
+                    } else {
+                        return false;
+                    }
+                } else {
+                    if (first.getLeft() != null){
+                        first = first.getLeft();
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
+    public boolean searchRoute(String from, String to, int type) {
+        return false;
     }
 
     private class RBTNode {

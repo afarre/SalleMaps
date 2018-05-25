@@ -138,4 +138,8 @@ public class Graph {
     public String toString (){
         return graph.toString();
     }
+
+    public MyList<Node> getList(){
+        return graph;
+    }
 }
