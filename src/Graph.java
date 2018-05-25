@@ -96,12 +96,16 @@ public class Graph {
         String stringway = graph.get(pto).getCity().getName();
         while  (!finish){
             pto = way[pto];
-            stringway = stringway + ", " + graph.get(pto).getCity().getName();
+            stringway = stringway + "," + graph.get(pto).getCity().getName();
             if (way[pto] == -1){
                 finish = true;
             }
         }
-        System.out.println(stringway);
+        String [] yaw = stringway.split(",");
+        for (int i = yaw.length; i > 1; i--){
+            System.out.print(yaw[i-1] + ", ");
+        }
+        System.out.println(yaw[0] + ".");
         System.out.println("Value=" + value[pfrom]);
 
     }

@@ -21,16 +21,20 @@ public class RedBlackTree {
         //Añadir relaciones = mirar casos y rotaciones
         wheregoes(node);
         tree.add(node);
-        checkRotations(node);
+        //checkRotations(node);
     }
 
     private void wheregoes (RBTNode node){
         RBTNode first = tree.get(0);
         boolean placed  = false;
 
+        if (first == null){
+            placed = true;
+        }
+
         while (!placed) {
-            if (Integer.parseInt(String.valueOf(node.getCityModel().getName().charAt(0))) -
-                    Integer.parseInt(String.valueOf(first.getCityModel().getName().charAt(0))) > 0) {
+            if ((int)(node.getCityModel().getName().charAt(0)) -
+                    (int)(first.getCityModel().getName().charAt(0)) > 0) {
                 if (first.getRight() != null){
                     first = first.getRight();
                 } else {
@@ -45,31 +49,31 @@ public class RedBlackTree {
                     first.setLeft(node);
                     node.setParent(first);
                     placed = true;
+                }
+            }
+            if ((int)(node.getCityModel().getName().charAt(0)) -
+                    (int)(first.getCityModel().getName().charAt(0)) == 0){
+                if ((int)(node.getCityModel().getName().charAt(1)) -
+                        (int)(first.getCityModel().getName().charAt(1)) >= 0) {
+                    if (first.getRight() != null){
+                        first = first.getRight();
+                    } else {
+                        first.setRight(node);
+                        node.setParent(first);
+                        placed = true;
+                    }
+                } else {
+                    if (first.getLeft() != null){
+                        first = first.getLeft();
+                    } else {
+                        first.setLeft(node);
+                        node.setParent(first);
+                        placed = true;
+                    }
                 }
             }
         }
 
-        if (Integer.parseInt(String.valueOf(node.getCityModel().getName().charAt(0))) -
-                Integer.parseInt(String.valueOf(first.getCityModel().getName().charAt(0))) == 0){
-            if (Integer.parseInt(String.valueOf(node.getCityModel().getName().charAt(1))) -
-                    Integer.parseInt(String.valueOf(first.getCityModel().getName().charAt(1))) >= 0) {
-                if (first.getRight() != null){
-                    first = first.getRight();
-                } else {
-                    first.setRight(node);
-                    node.setParent(first);
-                    placed = true;
-                }
-            } else {
-                if (first.getLeft() != null){
-                    first = first.getLeft();
-                } else {
-                    first.setLeft(node);
-                    node.setParent(first);
-                    placed = true;
-                }
-            }
-        }
     }
 
     private void checkRotations(RBTNode node) {
@@ -81,6 +85,8 @@ public class RedBlackTree {
         }else{
             uncle = grandDad.getLeft();
         }
+
+        //TODO: comprobar que existem los nodos antes de comprobar las rotaciones
 
         //caso 1:
         if (uncle.getColour() == 0){
@@ -142,8 +148,8 @@ public class RedBlackTree {
                 return true;
             }
 
-            if (Integer.parseInt(String.valueOf(city.charAt(0))) -
-                    Integer.parseInt(String.valueOf(first.getCityModel().getName().charAt(0))) > 0) {
+            if ((int)(city.charAt(0)) -
+                    (int)(first.getCityModel().getName().charAt(0)) > 0) {
                 if (first.getRight() != null){
                     first = first.getRight();
                 }else {
@@ -157,10 +163,10 @@ public class RedBlackTree {
                 }
             }
 
-            if (Integer.parseInt(String.valueOf(city.charAt(0))) -
-                    Integer.parseInt(String.valueOf(first.getCityModel().getName().charAt(0))) == 0){
-                if (Integer.parseInt(String.valueOf(city.charAt(1))) -
-                        Integer.parseInt(String.valueOf(first.getCityModel().getName().charAt(1))) >= 0) {
+            if ((int)(city.charAt(0)) -
+                    (int)(first.getCityModel().getName().charAt(0)) == 0){
+                if ((int)(city.charAt(1)) -
+                        (int)(first.getCityModel().getName().charAt(1)) >= 0) {
                     if (first.getRight() != null){
                         first = first.getRight();
                     } else {

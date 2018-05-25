@@ -7,6 +7,9 @@ public class HashList {
 
     public HashList (MyList<Node> data){
         list = new MyList[27];
+        for (int i = 0; i < list.length; i++){
+            list[i] = new MyList<>();
+        }
         for (int i = 0; i < data.size(); i++){
             add(data.get(i).getCity().getName(), data.get(i).getCity());
         }
@@ -17,8 +20,8 @@ public class HashList {
     }
 
     private int hash (String clave){
-        clave.toLowerCase();
-        return Integer.parseInt(String.valueOf(clave.charAt(0))) - Integer.parseInt("a");
+        clave = clave.toLowerCase();
+        return (int)(clave.charAt(0)) - (int) ('a');
     }
 
     public boolean searchCity(String city) {

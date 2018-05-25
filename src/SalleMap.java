@@ -41,8 +41,8 @@ public class SalleMap {
                 switch (option){
                     case 1: //Importar mapa. Lectura json.
                         importMap();
-                        hash = new HashList(graph.getList());
-                        rbt = new RedBlackTree(graph.getList());
+                        //hash = new HashList(graph.getList());
+                        //rbt = new RedBlackTree(graph.getList());
                         jsonIntroduced = true;
                         break;
                     case 2: //Buscar ciudad. Sino existe, añadir ciudad que no existe.
@@ -274,8 +274,8 @@ public class SalleMap {
     }
 
     private void readJson(JsonObject jsonObject) {
-        MyList<CityModel> cities = new MyList();
-        MyList<ConnectionModel> connections = new MyList();
+        MyList<CityModel> cities = new MyList<>();
+        MyList<ConnectionModel> connections = new MyList<>();
 
         int sizecities = jsonObject.get("cities").getAsJsonArray().size();
         for (int i = 0; i < sizecities; i++){

@@ -11,6 +11,11 @@ public class MyList<T> extends AbstractList<T> {
         numElements = 0;
     }
 
+    public MyList (int i){
+        list = (T[]) new Object[i];
+        numElements = 0;
+    }
+
     public MyList(T[] content){
         if (content.length < INITIALCAPACITY){
             list = (T[]) new Object[INITIALCAPACITY];
