@@ -21,7 +21,7 @@ public class RedBlackTree {
         //Añadir relaciones = mirar casos y rotaciones
         wheregoes(node);
         tree.add(node);
-        //checkRotations(node);
+        checkRotations(node);
     }
 
     private int nameToInt(Node n){
@@ -65,27 +65,18 @@ public class RedBlackTree {
         RBTNode uncle = null;
         if (grandDad.getLeft().equals(parent)){
             uncle = grandDad.getRight();
-        }else{
+        }else if (grandDad.getRight().equals(parent)){
             uncle = grandDad.getLeft();
         }
 
         //TODO: comprobar que existem los nodos antes de comprobar las rotaciones
 
-        //caso 1:
-        if (uncle.getColour() == 0){
-            grandDad.setColour((byte) 0);;
-            parent.setColour((byte) 1);
-            uncle.setColour((byte) 1);
-            node.setColour((byte) 0);
-            checkRotations(grandDad);
-            checkRotations(parent);
-        }
         if (uncle == null){
-
             //caso 2a:
             if (grandDad.getColour() == 1 && parent.getRight().equals(node) && uncle.getLeft().equals(parent)){
                 grandDad.setLeft(node);
                 node.setLeft(parent);
+                checkProperties(node, parent);
                 checkRotations(grandDad);
                 checkRotations(parent);
             }
@@ -94,6 +85,7 @@ public class RedBlackTree {
             if (grandDad.getColour() == 1 && parent.getRight().equals(node) && uncle.getLeft().equals(parent)){
                 grandDad.setLeft(node);
                 node.setLeft(parent);
+                checkProperties(node, parent);
                 checkRotations(grandDad);
                 checkRotations(parent);
             }
@@ -104,6 +96,7 @@ public class RedBlackTree {
                 parent.setRight(grandDad);
                 parent.setColour((byte) 1);
                 grandDad.setColour((byte) 0);
+                checkProperties(node, parent);
                 checkRotations(grandDad);
                 checkRotations(parent);
             }
@@ -114,14 +107,46 @@ public class RedBlackTree {
                 parent.setRight(node);
                 parent.setLeft(grandDad);
                 grandDad.setColour((byte) 0);
+                checkProperties(node, parent);
                 checkRotations(grandDad);
                 checkRotations(parent);
             }
 
         }else{
-            //el padrí es null per lo que es un node fulla
-            System.out.println("Es un node fulla.");
+            //caso 1:
+            if (uncle.getColour() == 0){
+                grandDad.setColour((byte) 0);;
+                parent.setColour((byte) 1);
+                uncle.setColour((byte) 1);
+                node.setColour((byte) 0);
+                checkProperties(node, parent);
+                checkRotations(grandDad);
+                checkRotations(parent);
+            }
         }
+        checkBlackNodes();
+    }
+
+    private void checkProperties(RBTNode node, RBTNode parent) {
+        //propiedad 2:
+        if (node.getParent() == null){
+            node.setColour((byte) 1);
+        }
+        //propiedad 3:
+        if (node.getLeft() == null && node.getRight() == null){
+            node.setColour((byte) 1);
+        }
+        //propiedad 4:
+        if (parent.getColour() == 0){
+            parent.getRight().setColour((byte) 11);
+            parent.getLeft().setColour((byte) 11);
+        }
+    }
+
+    private void checkBlackNodes() {
+        int left = 0;
+        int right = 0;
+
     }
 
     public boolean searchCity(Node node) {
