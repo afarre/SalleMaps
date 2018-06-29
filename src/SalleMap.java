@@ -4,6 +4,7 @@ import com.google.gson.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -17,7 +18,7 @@ public class SalleMap {
 
     private Graph graph;
     private HashList hash;
-    private RedBlackTree rbt;
+    private AVL avl;
     private final static String API_KEY = "AIzaSyCMG_IEevGb9kFUfR_DVgQIT0Gfqrz3S_I";
     private final static Integer MIN_DISTANCE = 300000;
     private final static Integer EARTH_LONG = 400750000;
@@ -41,8 +42,8 @@ public class SalleMap {
                 switch (option){
                     case 1: //Importar mapa. Lectura json.
                         importMap();
-                        //hash = new HashList(graph.getList());
-                        //rbt = new RedBlackTree(graph.getList());
+                        hash = new HashList(graph.getList());
+                        avl = new AVL(graph);
                         jsonIntroduced = true;
                         break;
                     case 2: //Buscar ciudad. Sino existe, añadir ciudad que no existe.
@@ -58,7 +59,7 @@ public class SalleMap {
                         Scanner sc = new Scanner(System.in);
                         switch (structure){
                             case 1:
-                                searchCityRBT(sc.nextLine());
+                                searchCityAVL(sc.nextLine());
                                 break;
                             case 2:
                                 searchCityHash(sc.nextLine());
@@ -90,7 +91,7 @@ public class SalleMap {
                         String to = sc.nextLine();
                         switch (structure){
                             case 1:
-                                calculateRouteRBT(from, to, type);
+                                avl.searchRoute(from, to, type);
                                 break;
                             case 2:
                                 calculateRouteHash(from, to ,type);
@@ -115,18 +116,10 @@ public class SalleMap {
     }
 
     private void calculateRouteHash(String from, String to, int type) {
-        if (!rbt.searchRoute(from, to, type)){
+        //type: 1-short; 2-fast
+        if (!hash.searchRoute(from, to, type)){
             System.out.println("No route found");
         }else {
-            //TODO: SHOW ROUTE INFO
-        }
-    }
-
-    private void calculateRouteRBT(String from, String to, int type) {
-        if (!rbt.searchRoute(from, to, type)){
-            System.out.println("No route found");
-        }else {
-            rbt.calculateRoute(from, to, type);
             //TODO: SHOW ROUTE INFO
         }
     }
@@ -141,7 +134,7 @@ public class SalleMap {
         }
     }
 
-    private void searchCityRBT(String city) {
+    private void searchCityAVL(String city) {
         WSGoogleMaps.getInstance().setApiKey(API_KEY);
         HttpRequest.HttpReply httpReply = new HttpRequest.HttpReply() {
             @Override
@@ -155,8 +148,9 @@ public class SalleMap {
                         jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lat").getAsLong(),
                         jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsLong());
                 Node node = new Node(cityModel);
-                if (!rbt.searchCity(node)) {
+                if (!avl.searchCity(node.getCity().getName())) {
                     addCityToModel(city, 1);
+                    avl.add(graph.size());
                     System.out.println("City added to system.");
                 } else {
                     System.out.println("City name: " + node.getCity().getName());
@@ -173,7 +167,7 @@ public class SalleMap {
 
     private int chooseStructure() throws InputMismatchException{
         System.out.println("\nChoose structure:");
-        System.out.println("\t1.Red-Black-Tree(RBT)");
+        System.out.println("\t1.AVL tree");
         System.out.println("\t2.Hash table");
         System.out.println("\t3.No optimization");
         Scanner sc = new Scanner(System.in);
@@ -217,7 +211,7 @@ public class SalleMap {
                         graph.add(node);
                         break;
                     case 1:
-                        rbt.add(node);
+                        graph.add(node);
                         break;
                     case 2:
                         //hash.add(ci);

@@ -34,4 +34,17 @@ public class HashList {
         }
         return false;
     }
+
+    public boolean searchRoute(String from, String to, int type) {
+        int hashedFrom = hash(from);
+        int hashedTo = hash(to);
+        if (type == 1){
+            //search short route
+
+        }else {
+            //show fast route
+
+        }
+        return false;
+    }
 }
