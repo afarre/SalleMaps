@@ -114,39 +114,98 @@ public class AVL {
         add(12);
         add(11);
         */
-/*LR CON CAMBIO DE RAIZ Y NODO CAMBIA RAMA
+/*LR CON CAMBIO DE RAIZ Y NODO CAMBIA RAMA (DERECHO)
+        add(7);
+        add(3);
+        add(8);
+        add(2);
+        add(4);
         add(5);
+        */
+/*LR CON CAMBIO DE RAIZ Y NODO CAMBIA RAMA (IZQUIERDO)
+        add(7);
+        add(3);
+        add(8);
+        add(2);
+        add(5);
+        add(4);
         */
 /*LR CON CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
         add(5);
-        */
-/*LR SIN CAMBIO DE RAIZ Y NODO CAMBIA RAMA
-        add(5);
-        */
-/*LR SIN CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
-        add(5);
-        */
-/*LL CON CAMBIO DE RAIZ Y NODO CAMBIA RAMA
-        add(5);
-        */
-/*LL CON CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
-        add(5);
-        */
-/*LL SIN CAMBIO DE RAIZ Y NODO CAMBIA RAMA
-        add(5);
-        */
-/*LL SIN CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
-        add(5);
-        */
-
         add(3);
+        add(4);
+        */
+/*LR SIN CAMBIO DE RAIZ Y NODO CAMBIA RAMA (DERECHO)
+        add(9);
+        add(7);
+        add(12);
+        add(3);
+        add(8);
+        add(10);
+        add(13);
+        add(2);
+        add(4);
+        add(5);
+        */
+/*LR SIN CAMBIO DE RAIZ Y NODO CAMBIA RAMA (IZQUIERDO)
+        add(9);
+        add(7);
+        add(12);
+        add(3);
+        add(8);
+        add(10);
+        add(13);
         add(2);
         add(5);
-        add(1);
         add(4);
-        add(10);
+        */
+/*LR SIN CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
+        add(6);
+        add(4);
+        add(7);
+        add(2);
+        add(3);
+        */
+/*LL CON CAMBIO DE RAIZ Y NODO CAMBIA RAMA
+        add(6);
+        add(4);
+        add(7);
+        add(3);
+        add(5);
+        add(2);
+        */
+/*LL CON CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
+        add(3);
+        add(2);
+        add(1);
+        */
+/*LL SIN CAMBIO DE RAIZ Y NODO CAMBIA RAMA
+        add(8);
+        add(5);
         add(9);
+        add(3);
+        add(6);
+        add(10);
+        add(2);
+        add(4);
+        add(1);
+        */
+/*LL SIN CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
+        add(4);
+        add(3);
+        add(5);
+        add(2);
+        add(1);
+        */
         add(11);
+        add(5);
+        add(13);
+        add(4);
+        add(9);
+        add(12);
+        add(14);
+        add(7);
+        add(10);
         add(8);
     }
 
@@ -315,35 +374,162 @@ public class AVL {
 
     private void LL(AVLNode n) {
         if (n.getParent() != null){
-            System.out.println("Un LL sense canvi de raiz (node " + n.getElement() + ")");
-            AVLNode aux = n.getLeft().getRight();
-            n.getLeft().setRight(n);
-            n.setLeft(aux);
+            if (n.getLeft().getRight() != null){
+                System.out.println("Un LL sense canvi de raiz i node canvia de branca (node " + n.getElement() + ")");
+                if (n == n.getParent().getRight()){
+                    n.getParent().setRight(n.getLeft());
+                }else {
+                    n.getParent().setLeft(n.getLeft());
+                }
+                n.getLeft().setParent(n.getParent());
+                n.setParent(n.getLeft());
+                n.getLeft().getRight().setParent(n);
+                n.setLeft(n.getLeft().getRight());
+                n.getParent().setRight(n);
+            }else {
+                System.out.println("Un LL sense canvi de raiz i node no canvia de branca (node " + n.getElement() + ")");
+                if (n == n.getParent().getRight()){
+                    n.getParent().setRight(n.getLeft());
+                }else {
+                    n.getParent().setLeft(n.getLeft());
+                }
+                n.getLeft().setParent(n.getParent());
+                n.getLeft().setRight(n);
+                n.setParent(n.getLeft());
+                n.setLeft(null);
+            }
         }else {
             //hay que modificar raiz
-            System.out.println("Un LL amb canvi de raiz (node " + n.getElement() + ")");
-
+            if (n.getLeft().getRight() != null){
+                System.out.println("Un LL amb canvi de raiz i node canvia de branca (node " + n.getElement() + ")");
+                raiz = n.getLeft();
+                n.setLeft(raiz.getRight());
+                n.getRight().setParent(n);
+                raiz.setRight(n);
+                n.setParent(raiz);
+                raiz.setParent(null);
+                n.getLeft().setParent(n);
+            }else {
+                System.out.println("Un LL amb canvi de raiz i node no canvia de branca (node " + n.getElement() + ")");
+                n.getLeft().setRight(n);
+                n.setParent(n.getLeft());
+                raiz = n.getParent();
+                raiz.setParent(null);
+                raiz.getRight().setLeft(null);
+            }
         }
     }
 
     private void LR(AVLNode n) {
         if (n.getParent() != null){
-            System.out.println("Un LR sense canvi de raiz (node " + n.getElement() + ")");
-            //1er paso
-            AVLNode aux = n.getLeft();
-            n.setLeft(aux.getRight());
-            aux.setRight(null);
-            n.getLeft().setLeft(aux);
-            //2o paso
-            AVLNode aux1 = n.getLeft().getRight();
-            n.getLeft().setRight(n);
-            n.setLeft(aux1);
+            if (n.getLeft().getRight().getRight() != null){
+                System.out.println("Un LR sense canvi de raiz i un node (dret) canvia de branca (node " + n.getElement() + ")");
+                //1er paso
+                if (n == n.getParent().getRight()){
+                    n.getParent().setRight(n.getLeft().getRight());
+                }else {
+                    n.getParent().setLeft(n.getLeft().getRight());
+                }
+                AVLNode aux = n.getLeft();
+                aux.setParent(aux.getRight());
+                n.setLeft(aux.getRight());
+                n.getLeft().setParent(n.getParent());
+                aux.setRight(null);
+                n.getLeft().setRight(n.getLeft().getRight());
+                //2o paso
+                AVLNode aux1 = n.getLeft().getRight();
+                n.setParent(n.getLeft());
+                n.getLeft().setRight(n);
+                n.getLeft().setLeft(aux);
+                n.setLeft(aux1);
+                n.getLeft().setParent(n);
+            }else if (n.getLeft().getRight().getLeft() != null){
+                System.out.println("Un LR sense canvi de raiz i un node (esquerra) canvia de branca (node " + n.getElement() + ")");
+                //1er paso
+                if (n == n.getParent().getRight()){
+                    n.getParent().setRight(n.getLeft().getRight());
+                }else {
+                    n.getParent().setLeft(n.getLeft().getRight());
+                }
+                AVLNode aux = n.getLeft();
+                aux.setParent(aux.getRight());
+                n.setLeft(aux.getRight());
+                n.getLeft().setParent(n.getParent());
+                aux.setRight(aux.getRight().getLeft());
+                aux.getRight().setParent(aux);
+                n.getLeft().setRight(n.getLeft().getRight());
+                //2o paso
+                n.setParent(n.getLeft());
+                n.getLeft().setRight(n);
+                n.getLeft().setLeft(aux);
+                n.setLeft(null);
+                n.getRight().setParent(n);
+            }else {
+                System.out.println("Un LR sense canvi de raiz i cap node canvia de branca (node " + n.getElement() + ")");
+                if (n == n.getParent().getRight()){
+                    n.getParent().setRight(n.getLeft().getRight());
+                }else {
+                    n.getParent().setLeft(n.getLeft().getRight());
+                }
+                n.getLeft().getRight().setParent(n.getParent());
+                n.setParent(n.getLeft().getRight());
+                n.getLeft().setParent(n.getLeft().getRight());
+                n.getLeft().getRight().setLeft(n.getLeft());
+                n.getParent().setRight(n);
+                n.getLeft().setRight(null);
+                n.setLeft(null);
+            }
         }else {
-            //hay que modificar raiz
-            System.out.println("Un LR amb canvi de raiz (node " + n.getElement() + ")");
-
+            if (n.getRight() == null){
+                //hay que modificar raiz y no se cambia un nodo de rama
+                System.out.println("Un LR amb canvi de raiz i cap node canvia de branca (node " + n.getElement() + ")");
+                n.getLeft().getRight().setRight(n);
+                n.setParent(n.getLeft().getRight());
+                raiz = n.getLeft().getRight();
+                raiz.setParent(null);
+                n.getLeft().setRight(null);
+                raiz.setLeft(n.getLeft());
+                n.getLeft().setParent(raiz);
+                n.setLeft(null);
+            }else {
+                if (n.getLeft().getRight().getRight() != null){
+                    //hay que modificar raiz y se cambia un nodo de rama
+                    System.out.println("Un LR amb canvi de raiz i un node (el dret) canvia de branca (node " + n.getElement() + ")");
+                    //1er paso
+                    AVLNode aux = n.getLeft();
+                    aux.setParent(aux.getRight());
+                    n.setLeft(aux.getRight());
+                    n.getLeft().setParent(n.getParent());
+                    aux.setRight(null);
+                    n.getLeft().setRight(n.getLeft().getRight());
+                    //2o paso
+                    AVLNode aux1 = n.getLeft().getRight();
+                    n.setParent(n.getLeft());
+                    n.getLeft().setRight(n);
+                    n.getLeft().setLeft(aux);
+                    n.setLeft(aux1);
+                    raiz = n.getParent();
+                    n.getLeft().setParent(n);
+                }else {
+                    //hay que modificar raiz y se cambia un nodo de rama
+                    System.out.println("Un LR amb canvi de raiz i un node (el esquerre) canvia de branca (node " + n.getElement() + ")");
+                    //1er paso
+                    AVLNode aux = n.getLeft();
+                    aux.setParent(aux.getRight());
+                    n.setLeft(aux.getRight());
+                    aux.getRight().getLeft().setParent(aux);
+                    aux.setRight(aux.getRight().getLeft());
+                    //2o paso
+                    n.setParent(n.getLeft());
+                    n.getLeft().setRight(n);
+                    n.getLeft().setLeft(aux);
+                    n.setLeft(null);
+                    raiz = n.getParent();
+                    raiz.setParent(null);
+                    n.getRight().setParent(n);
+                }
+            }
         }
-
     }
 
     private void RL(AVLNode n) {
@@ -360,7 +546,11 @@ public class AVL {
                 n.getRight().setRight(aux);
                 //2o paso
                 AVLNode aux1 = n.getRight().getLeft();
-                n.getParent().setRight(n.getRight());
+                if (n == n.getParent().getRight()){
+                    n.getParent().setRight(n.getRight());
+                }else {
+                    n.getParent().setLeft(n.getRight());
+                }
                 n.setParent(n.getRight());
                 n.getRight().setLeft(n);
                 n.setRight(aux1);
