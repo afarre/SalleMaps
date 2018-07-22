@@ -42,7 +42,6 @@ public class SalleMap {
                 switch (option){
                     case 1: //Importar mapa. Lectura json.
                         importMap();
-                        hash = new HashList(graph.getList());
                         avl = new AVL(graph);
                         jsonIntroduced = true;
                         break;
@@ -62,7 +61,6 @@ public class SalleMap {
                                 searchCityAVL(sc.nextLine());
                                 break;
                             case 2:
-                                searchCityHash(sc.nextLine());
                                 break;
                             case 3:
                                 searchCity(sc.nextLine());
@@ -94,7 +92,6 @@ public class SalleMap {
                                 avl.searchRoute(from, to, type);
                                 break;
                             case 2:
-                                calculateRouteHash(from, to ,type);
                                 break;
                             case 3:
                                 route(from, to, type);
@@ -112,25 +109,6 @@ public class SalleMap {
             }catch (InputMismatchException e){
                 System.out.println("Input mismatch");
             }
-        }
-    }
-
-    private void calculateRouteHash(String from, String to, int type) {
-        //type: 1-short; 2-fast
-        if (!hash.searchRoute(from, to, type)){
-            System.out.println("No route found");
-        }else {
-            //TODO: SHOW ROUTE INFO
-        }
-    }
-
-    private void searchCityHash(String city) {
-        if (!hash.searchCity(city)){
-            addCityToModel(city, 2);
-            hash.add(city, graph.getLastOne().getCity());
-            //TODO: INFORM CITY ADDED
-        }else {
-            //TODO: RETURN CITY INFO
         }
     }
 

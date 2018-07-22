@@ -1,50 +1,82 @@
-public class HashList {
-    private MyList<CityModel>[] list;
+import java.lang.reflect.Array;
 
-    public HashList (){
-        list = new MyList[27];
+public class HashList<T> {
+    private Entry<T>[] list;
+    private int current;
+    private int maxcapacity;
+
+    public HashList (int maxcapacity) {
+        list = new Entry[maxcapacity];
+        this.maxcapacity = maxcapacity;
+        current = 0;
     }
 
-    public HashList (MyList<Node> data){
-        list = new MyList[27];
-        for (int i = 0; i < list.length; i++){
-            list[i] = new MyList<>();
+    public synchronized void add (String clave, T valor){
+        if (current == list.length){
+            System.out.println("The HashList hasn't more capacity");
+        } else {
+            int value = hash(clave);
+            while (list[value] != null){
+                if (list[value].getKey().equals(clave)){
+                    System.out.println("The key (" + clave +") is in the HashTable, you can't input again.");
+                    return;
+                }
+                value = hash(value);
+            }
+            list[value] = new Entry(clave, valor);
         }
-        for (int i = 0; i < data.size(); i++){
-            add(data.get(i).getCity().getName(), data.get(i).getCity());
-        }
-    }
-
-    public void add (String clave, CityModel valor){
-        list[hash(clave)].add(valor);
+        current++;
+        System.out.println(this.toString());
     }
 
     private int hash (String clave){
         clave = clave.toLowerCase();
-        return (int)(clave.charAt(0)) - (int) ('a');
+        int value = (int)(clave.charAt(0)) - (int) ('a');
+        value = hash(value);
+        return value;
     }
 
-    public boolean searchCity(String city) {
-        int hash = hash(city);
-        int size = list[hash].size();
-        for (int i = 0;  i < size; i++){
-            if (list[hash].get(i).getName().equals(city)){
-                return true;
+    private int hash (int value){
+        value = value % maxcapacity;
+        value = value + 1;
+        if (value >= maxcapacity) value = 0;
+        return value;
+    }
+
+    private T get (String key){
+        int value = hash(key);
+        while (list[value] == null || !(list[value].getKey().equals(key))){
+            value = hash(value);
+        }
+        System.out.println(list[value].getValue());
+        return list[value].getValue();
+    }
+
+    public int capacity (){
+        return maxcapacity;
+    }
+
+    @Override
+    public String toString (){
+        StringBuilder sb = new StringBuilder();
+        sb.append("MAX:").append(maxcapacity).append("\n");
+        for (int i = 0; i < maxcapacity; i++){
+            sb.append(i).append("|");
+            if (list[i] == null){
+                sb.append("null").append("\n");
+            } else {
+                sb.append(list[i].toString()).append("\n");
             }
         }
-        return false;
+        return sb.toString();
     }
 
-    public boolean searchRoute(String from, String to, int type) {
-        int hashedFrom = hash(from);
-        int hashedTo = hash(to);
-        if (type == 1){
-            //search short route
-
-        }else {
-            //show fast route
-
-        }
-        return false;
+    public static void main (String[] args){
+        HashList<Integer> asdf = new HashList<>(5);
+        asdf.add("a", 1);
+        asdf.add("b", 2);
+        asdf.add("c", 5);
+        asdf.add("d", 4);
+        asdf.add("z", 3);
     }
 }
