@@ -197,16 +197,19 @@ public class AVL {
         add(2);
         add(1);
         */
-        add(11);
-        add(5);
-        add(13);
-        add(4);
-        add(9);
-        add(12);
-        add(14);
-        add(7);
-        add(10);
+
         add(8);
+        add(2);
+        add(9);
+        add(1);
+        add(5);
+        add(10);
+        add(0);
+        add(4);
+        add(6);
+        add(7);
+
+
     }
 
     private void printa(){
@@ -271,7 +274,7 @@ public class AVL {
                 parent = aux;
                 aux = aux.getLeft();
                 if (aux == null){
-                    //System.out.println("Fico " + nuevo.getElement() + " com a esquerra de " + parent.getElement());
+                    System.out.println("Fico " + nuevo.getElement() + " com a esquerra de " + parent.getElement());
                     parent.setLeft(nuevo);
                     nuevo.setParent(parent);
                 }
@@ -280,7 +283,7 @@ public class AVL {
                 parent = aux;
                 aux = aux.getRight();
                 if (aux == null){
-                    //System.out.println("Fico " + nuevo.getElement() + " com a dreta de " + parent.getElement());
+                    System.out.println("Fico " + nuevo.getElement() + " com a dreta de " + parent.getElement());
                     parent.setRight(nuevo);
                     nuevo.setParent(parent);
                 }
@@ -289,6 +292,7 @@ public class AVL {
 
         AVLTree.add(nuevo);
         checkRotations(nuevo);
+        printa();
     }
 
     private void checkRotations(AVLNode n) {
@@ -369,7 +373,7 @@ public class AVL {
 
             }
         }
-        printa();
+        //printa();
     }
 
     private void LL(AVLNode n) {
@@ -500,7 +504,12 @@ public class AVL {
                     aux.setParent(aux.getRight());
                     n.setLeft(aux.getRight());
                     n.getLeft().setParent(n.getParent());
-                    aux.setRight(null);
+                    if (aux.getRight().getLeft() != null){
+                        aux.getRight().getLeft().setParent(aux);
+                        aux.setRight(aux.getRight().getLeft());
+                    }else {
+                        aux.setRight(null);
+                    }
                     n.getLeft().setRight(n.getLeft().getRight());
                     //2o paso
                     AVLNode aux1 = n.getLeft().getRight();
@@ -565,7 +574,11 @@ public class AVL {
                 n.getRight().setRight(aux);
                 //2o paso
                 AVLNode aux1 = n.getRight().getLeft();
-                n.getParent().setRight(n.getRight());
+                if (n == n.getParent().getRight()){
+                    n.getParent().setRight(n.getRight());
+                }else {
+                    n.getParent().setLeft(n.getRight());
+                }
                 n.setParent(n.getRight());
                 n.getRight().setLeft(n);
                 n.setRight(aux1);
@@ -581,7 +594,11 @@ public class AVL {
                 n.getRight().setRight(aux);
                 //2o paso
                 AVLNode aux1 = n.getRight().getLeft();
-                n.getParent().setRight(n.getRight());
+                if (n == n.getParent().getRight()){
+                    n.getParent().setRight(n.getRight());
+                }else {
+                    n.getParent().setLeft(n.getRight());
+                }
                 n.setParent(n.getRight());
                 n.getRight().setLeft(n);
                 n.setRight(aux1);
@@ -599,7 +616,11 @@ public class AVL {
                 n.getRight().setRight(aux);
                 //2o paso
                 AVLNode aux1 = n.getRight().getLeft();
-                n.setParent(n.getRight());
+                if (n == n.getParent().getRight()){
+                    n.getParent().setRight(n.getRight());
+                }else {
+                    n.getParent().setLeft(n.getRight());
+                }
                 n.getRight().setLeft(n);
                 n.setRight(aux1);
                 raiz = n.getParent();
@@ -611,13 +632,22 @@ public class AVL {
                     AVLNode aux = n.getRight();
                     aux.setParent(aux.getLeft());
                     n.setRight(aux.getLeft());
-                    n.getRight().setParent(n.getParent());
-                    aux.setLeft(null);
+                    n.getRight().setParent(null);
+                    if (aux.getLeft().getRight() != null){
+                        aux.getLeft().getRight().setParent(aux);
+                        aux.setLeft(aux.getLeft().getRight());
+                    }else {
+                        aux.setLeft(null);
+                    }
                     n.getRight().setRight(aux);
                     //2o paso
                     AVLNode aux1 = n.getRight().getLeft();
                     n.setParent(n.getRight());
-                    n.getRight().setLeft(n);
+                    if (n == n.getParent().getRight()){
+                        n.getParent().setRight(n);
+                    }else {
+                        n.getParent().setLeft(n);
+                    }
                     n.setRight(aux1);
                     raiz = n.getParent();
                     n.getRight().setParent(n);
