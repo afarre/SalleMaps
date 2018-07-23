@@ -109,6 +109,7 @@ public class SalleMap {
     }
 
     private void searchRouteHash(String from, String to, int type) {
+        hash.cleanVisited();
         if (hash.get(from) == null || hash.get(to) == null){
             System.out.println("Error! Either origin city or destination city where not found. Please check if spelling is correct.");
             return;
@@ -118,26 +119,32 @@ public class SalleMap {
 
         Node nFrom = hash.get(from);
         Node nTo = hash.get(to);
-        System.out.println(calculateRouteHash(nFrom, nTo, T_NotD, MIN_DISTANCE * hash.getCurrent(), 0));
+        System.out.println(calculateRouteHash(nFrom, nTo, T_NotD));
 
 
     }
 
-    private int calculateRouteHash (Node nFrom, Node nTo, boolean T_NotD, int bestValue, int value){
-        int i = 0;
-        while (i < nFrom.getConnections().size()){
-            if (nFrom.getConnections().get(i).getTo().equals(nTo.getCity().getName())){
-                if (T_NotD) value = value + nFrom.getConnections().get(i).getDuration();
-                else value = value + nFrom.getConnections().get(i).getDistance();
-                if (value < bestValue) bestValue = value;
-            } else {
-                if (T_NotD) value = value + nFrom.getConnections().get(i).getDuration();
-                else value = value + nFrom.getConnections().get(i).getDistance();
-                if (value < bestValue) bestValue = calculateRouteHash(hash.get(nFrom.getConnections().get(i).getTo()), nTo, T_NotD, bestValue, value);
+    private int calculateRouteHash (Node nFrom, Node nTo, boolean T_NotD){
+        int lessvalue = 1000000000;
+        nFrom.setVisited(true);
+        for (int i = 0; i < nFrom.getConnections().size(); i++){
+            Node node = hash.get(nFrom.getConnections().get(i).getTo());
+            int prevalue;
+            if (!node.isVisited()) {
+                if (nFrom.getConnections().get(i).getTo().equals(nTo.getCity().getName())) {
+                    if (T_NotD) prevalue = nFrom.getConnections().get(i).getDuration();
+                    else prevalue = nFrom.getConnections().get(i).getDistance();
+                } else {
+                    if (T_NotD) prevalue = nFrom.getConnections().get(i).getDuration() +  calculateRouteHash(node, nTo, T_NotD);
+                    else prevalue = nFrom.getConnections().get(i).getDistance() +  calculateRouteHash(node, nTo, T_NotD);
+                }
+                if (lessvalue > prevalue){
+                    lessvalue = prevalue;
+                }
             }
-            i++;
         }
-        return bestValue;
+        nFrom.setVisited(false);
+        return lessvalue;
     }
 
     private void searchCityHash(final String city) {

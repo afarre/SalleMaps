@@ -28,7 +28,6 @@ public class HashList<T> {
             list[value] = new Entry(clave, valor);
         }
         current++;
-        System.out.println(this.toString());
     }
 
     private int hash (String clave){
@@ -92,5 +91,11 @@ public class HashList<T> {
         asdf.add("d", 4);
         asdf.add("z", 3);
         asdf.get("e");
+    }
+
+    public void cleanVisited() {
+        for (int i = 0; i < list.length; i++){
+            if (list[i] != null) ((Node)list[i].getValue()).setVisited(false);
+        }
     }
 }
