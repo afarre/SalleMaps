@@ -61,6 +61,7 @@ public class SalleMap {
                                 searchCityAVL(sc.nextLine());
                                 break;
                             case 2:
+                                //TODO: BUSCAR EN LA TABLA DE HASH
                                 break;
                             case 3:
                                 searchCity(sc.nextLine());
