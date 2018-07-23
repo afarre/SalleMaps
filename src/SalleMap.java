@@ -17,7 +17,7 @@ import java.util.Scanner;
 public class SalleMap {
 
     private Graph graph;
-    private HashList hash;
+    private HashList<Node> hash;
     private AVL avl;
     private final static String API_KEY = "AIzaSyCMG_IEevGb9kFUfR_DVgQIT0Gfqrz3S_I";
     private final static Integer MIN_DISTANCE = 300000;
@@ -36,6 +36,7 @@ public class SalleMap {
         System.out.println("Welcome to SalleMap.");
         boolean jsonIntroduced = false;
         int option = 0;
+        Scanner sc = new Scanner(System.in);
         while (option != 4){
             try {
                 option = menu();
@@ -43,6 +44,8 @@ public class SalleMap {
                     case 1: //Importar mapa. Lectura json.
                         importMap();
                         avl = new AVL(graph);
+                        //Creamos las otras estructuras de datos con el contenido del graph.
+                        createHashList();
                         jsonIntroduced = true;
                         break;
                     case 2: //Buscar ciudad. Sino existe, añadir ciudad que no existe.
@@ -50,20 +53,17 @@ public class SalleMap {
                             System.out.println("You must complete option 1 before selecting this option.");
                             break;
                         }
-                        int structure = 0;
-                        while (structure != 1 && structure != 2 && structure != 3){
-                            structure = chooseStructure();
-                        }
                         System.out.println("Insert city name:");
-                        Scanner sc = new Scanner(System.in);
-                        switch (structure){
+                        String city = sc.nextLine();
+                        switch (chooseStructure()){
                             case 1:
-                                searchCityAVL(sc.nextLine());
+                                searchCityAVL(city);
                                 break;
                             case 2:
+                                searchCityHash(city);
                                 break;
                             case 3:
-                                searchCity(sc.nextLine());
+                                searchCity(city);
                                 break;
                         }
                         break;
@@ -72,11 +72,6 @@ public class SalleMap {
                             System.out.println("You must complete option 1 before selecting this option.");
                             break;
                         }
-                        structure = 0;
-                        while (structure != 1 && structure != 2 && structure != 3){
-                            structure = chooseStructure();
-                        }
-                        sc = new Scanner (System.in);
                         System.out.println("1. Shorter route");
                         System.out.println("2. Fastest route");
                         System.out.println("Select one:");
@@ -87,11 +82,12 @@ public class SalleMap {
                         String from = sc.nextLine();
                         System.out.print("To: ");
                         String to = sc.nextLine();
-                        switch (structure){
+                        switch (chooseStructure()){
                             case 1:
                                 avl.searchRoute(from, to, type);
                                 break;
                             case 2:
+                                searchRouteHash(from, to, type);
                                 break;
                             case 3:
                                 route(from, to, type);
@@ -112,44 +108,71 @@ public class SalleMap {
         }
     }
 
+    private void searchRouteHash(String from, String to, int type) {
+        if (hash.get(from) == null || hash.get(to) == null){
+            System.out.println("Error! Either origin city or destination city where not found. Please check if spelling is correct.");
+            return;
+        }
+        boolean T_NotD = false;
+        if (type == 2) T_NotD = true;
+
+        Node nFrom = hash.get(from);
+        Node nTo = hash.get(to);
+        System.out.println(calculateRouteHash(nFrom, nTo, T_NotD, MIN_DISTANCE * hash.getCurrent(), 0));
+
+
+    }
+
+    private int calculateRouteHash (Node nFrom, Node nTo, boolean T_NotD, int bestValue, int value){
+        int i = 0;
+        while (i < nFrom.getConnections().size()){
+            if (nFrom.getConnections().get(i).getTo().equals(nTo.getCity().getName())){
+                if (T_NotD) value = value + nFrom.getConnections().get(i).getDuration();
+                else value = value + nFrom.getConnections().get(i).getDistance();
+                if (value < bestValue) bestValue = value;
+            } else {
+                if (T_NotD) value = value + nFrom.getConnections().get(i).getDuration();
+                else value = value + nFrom.getConnections().get(i).getDistance();
+                if (value < bestValue) bestValue = calculateRouteHash(hash.get(nFrom.getConnections().get(i).getTo()), nTo, T_NotD, bestValue, value);
+            }
+            i++;
+        }
+        return bestValue;
+    }
+
+    private void searchCityHash(final String city) {
+        Node node;
+        if ((node = hash.get(city)) == null){
+            addCityToModel(city);
+        } else {
+            System.out.println(node.toString());
+        }
+    }
+
+    private void createHashList() {
+        hash = new HashList();
+        for (int i = 0; i < graph.size(); i++){
+            hash.add(graph.get(i).getCity().getName(), graph.get(i));
+        }
+    }
+
     private void searchCityAVL(String city) {
-        WSGoogleMaps.getInstance().setApiKey(API_KEY);
-        HttpRequest.HttpReply httpReply = new HttpRequest.HttpReply() {
-            @Override
-            public void onSuccess(String s) {
-                JsonElement jelement = new JsonParser().parse(s);
-                JsonObject jobject = jelement.getAsJsonObject();
-                CityModel cityModel = new CityModel(
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(0).getAsJsonObject().get("long_name").getAsString(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("formatted_address").getAsString(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(3).getAsJsonObject().get("long_name").getAsString(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lat").getAsLong(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsLong());
-                Node node = new Node(cityModel);
-                if (!avl.searchCity(node.getCity().getName())) {
-                    addCityToModel(city, 1);
-                    avl.add(graph.size());
-                    System.out.println("City added to system.");
-                } else {
-                    System.out.println("City name: " + node.getCity().getName());
-                    System.out.println("Country code: ");
-                }
-            }
-
-            @Override
-            public void onError(String s) {
-
-            }
-        };
+       //Buscas la ciudad en el arbol, sino existe la añadimos al modelo con la funcion de addCityToModel();
     }
 
     private int chooseStructure() throws InputMismatchException{
-        System.out.println("\nChoose structure:");
-        System.out.println("\t1.AVL tree");
-        System.out.println("\t2.Hash table");
-        System.out.println("\t3.No optimization");
-        Scanner sc = new Scanner(System.in);
-        return sc.nextInt();
+        int structure = 0;
+
+        while (structure != 1 && structure != 2 && structure != 3){
+            System.out.println("\nChoose structure:");
+            System.out.println("\t1.AVL tree");
+            System.out.println("\t2.Hash table");
+            System.out.println("\t3.No optimization");
+            Scanner sc = new Scanner(System.in);
+            structure = sc.nextInt();
+        }
+
+        return structure;
     }
 
     private void searchCity(String city) {
@@ -164,11 +187,11 @@ public class SalleMap {
             }
         }
         if (!flag){
-            addCityToModel(city, 0);
+            addCityToModel(city);
         }
     }
 
-    private void addCityToModel(String city, int option) {
+    private void addCityToModel(final String city) {
         WSGoogleMaps.getInstance().setApiKey(API_KEY);
         HttpRequest.HttpReply httpReply = new HttpRequest.HttpReply() {
             @Override
@@ -184,17 +207,8 @@ public class SalleMap {
                 Node node = new Node(cityModel);
                 System.out.println("lat: " + cityModel.getLatitude());
                 System.out.println("lon: " + cityModel.getLongitude());
-                switch (option){
-                    case 0:
-                        graph.add(node);
-                        break;
-                    case 1:
-                        graph.add(node);
-                        break;
-                    case 2:
-                        //hash.add(ci);
-                        break;
-                }
+                graph.add(node);
+                hash.add(city, node);
             }
 
             @Override
@@ -207,29 +221,6 @@ public class SalleMap {
         httpReply = new HttpRequest.HttpReply() {
             @Override
             public void onSuccess(String s) {
-                switch (option){
-                    case 0:
-                        addConnectionToGraph(s);
-                        break;
-                    case 1:
-                        addConnectionToRBT(s);
-                        break;
-                    case 2:
-                        addConnectionToHash(s);
-                        break;
-                }
-
-            }
-
-            private void addConnectionToHash(String s) {
-                //TODO: INSERTAR AL HASH
-            }
-
-            private void addConnectionToRBT(String s) {
-                //TODO: INSERTAR AL RBT
-            }
-
-            private void addConnectionToGraph(String s) {
                 JsonElement jelement = new JsonParser().parse(s);
                 JsonObject jobject = jelement.getAsJsonObject();
                 int mindistance = EARTH_LONG;
@@ -271,6 +262,9 @@ public class SalleMap {
                             jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(minvalue).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
                     ));
                 }
+                //Actualizamos las demás es1tructuras.
+                createHashList();
+                avl = new AVL(graph);
             }
 
             @Override
