@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class AVL {
     private AVLNode raiz;
-    private ArrayList<AVLNode> AVLTree;
+    private MyList<AVLNode> AVLTree;
     private Graph graph;
     private boolean firstLink;
     private boolean secondLink;
@@ -10,15 +10,13 @@ public class AVL {
     private final static Integer EARTH_LONG = 400750000;
 
     public AVL(Graph graph){
-        AVLTree = new ArrayList<>();
+        AVLTree = new MyList<>();
         int size = graph.size();
         for (int i = 0; i < size; i++){
-            int value = castToInteger(graph.get(i).getCity().getName());
-            System.out.println(value);
             //for (char ch: graph.get(i).getCity().getName().replaceAll("\\s+","").toCharArray()) {
               //  value = value + ch - 'a' + 1;
             //}
-            add(value);
+            add(graph.get(i));
         }
 
 
@@ -244,7 +242,7 @@ public class AVL {
         System.out.println("raiz = " + raiz.getElement());
     }
 
-    public void add(int element) {
+    public void add(Node element) {
         if (raiz == null){
             raiz = new AVLNode(element, null);
             //System.out.println("Inserto el node " + raiz.getElement());
@@ -259,7 +257,7 @@ public class AVL {
         AVLNode aux = raiz;
         AVLNode parent = raiz;
         while (aux != null){
-            if (element < aux.getElement()){
+            if (element.getCity().getName().charAt(0) <= aux.getElement().getCity().getName().charAt(0)){
                 parent = aux;
                 aux = aux.getLeft();
                 if (aux == null){
@@ -702,24 +700,25 @@ public class AVL {
     }
 
     public void searchRoute(String from, String to, int type){
-        int fromInt = castToInteger(from);
-        int toInt = castToInteger(to);
-        if (existsCity(fromInt) && existsCity(toInt)){
+        if (existsCity(from) && existsCity(to)){
             //dijkstra(from, to, true);
         }else {
             System.out.println("Either origin or destiny city don't exist!");
         }
     }
 
-    private boolean existsCity(int nameInt) {
+    private boolean existsCity(String nameInt) {
         System.out.println("NameInt = " + nameInt);
-        if (raiz.getElement() == nameInt){
+        if (raiz.getElement().getCity().getName().equals(nameInt)){
             return true;
         }
         AVLNode node = raiz;
 
         while (node.getLeft() != null){
-            if (node.getElement() > nameInt){
+            if (node.getElement().getCity().getName().equals("nameInt")){
+                System.out.println("retorno true");
+                return true;
+            } else if (node.getElement().getCity().getName().charAt(0) <= nameInt.charAt(0)){
                 node = node.getLeft();
                 System.out.println("Node = " + node.getElement());
                 try {
@@ -727,7 +726,7 @@ public class AVL {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }else  if (node.getElement() < nameInt){
+            }else  if (node.getElement().getCity().getName().charAt(0) > nameInt.charAt(0)){
                 node = node.getRight();
                 System.out.println("Node = " + node.getElement());
                 try {
@@ -735,12 +734,9 @@ public class AVL {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }else if (node.getElement() == nameInt){
-                System.out.println("retorno true");
-                return true;
             }
         }
-        return node.getElement() == nameInt;
+        return node.getElement().getCity().getName().equals(nameInt);
     }
 
 
@@ -761,13 +757,13 @@ public class AVL {
     }
 
     private class AVLNode{
-        private int element;
+        private Node element;
         private AVLNode right;
         private AVLNode left;
         private AVLNode parent;
         private int height;
 
-        public AVLNode(int element, AVLNode parent){
+        public AVLNode(Node element, AVLNode parent){
             this.element = element;
             this.parent = parent;
             height = 0;
@@ -781,11 +777,11 @@ public class AVL {
             this.height = height;
         }
 
-        public int getElement() {
+        public Node getElement() {
             return element;
         }
 
-        public void setElement(int element) {
+        public void setElement(Node element) {
             this.element = element;
         }
 

@@ -87,6 +87,7 @@ public class SalleMap {
                                 avl.searchRoute(from, to, type);
                                 break;
                             case 2:
+                                //Lamamos al buscador de rutas del hash
                                 searchRouteHash(from, to, type);
                                 break;
                             case 3:
@@ -109,41 +110,54 @@ public class SalleMap {
     }
 
     private void searchRouteHash(String from, String to, int type) {
+        //Limpiamos si han sido visitados o no (es un nuevo paramentro que he añadido)
         hash.cleanVisited();
+        //Comprobamos si exiten los nodos
         if (hash.get(from) == null || hash.get(to) == null){
             System.out.println("Error! Either origin city or destination city where not found. Please check if spelling is correct.");
             return;
         }
         boolean T_NotD = false;
         if (type == 2) T_NotD = true;
-
+        //Cogemos los nodos de salida y llegada
         Node nFrom = hash.get(from);
         Node nTo = hash.get(to);
+        //Calculamos la ruta
         System.out.println(calculateRouteHash(nFrom, nTo, T_NotD));
 
 
     }
 
     private int calculateRouteHash (Node nFrom, Node nTo, boolean T_NotD){
+        //Valor mas pequeño
         int lessvalue = 1000000000;
+        //Le ponemos que se visita ese nodo
         nFrom.setVisited(true);
         for (int i = 0; i < nFrom.getConnections().size(); i++){
+            //Cogemos el nodo de la conexion que estamos mirando
             Node node = hash.get(nFrom.getConnections().get(i).getTo());
             int prevalue;
+            //Si el nodo no ha sido visitado, así evitamos el stackoverflowerror
             if (!node.isVisited()) {
+                //Si el to es igual que la conexion que estamos mirando
                 if (nFrom.getConnections().get(i).getTo().equals(nTo.getCity().getName())) {
+                    //Le añadimos el valor de la conexion al prevalue (valor de ahora mismo)
                     if (T_NotD) prevalue = nFrom.getConnections().get(i).getDuration();
                     else prevalue = nFrom.getConnections().get(i).getDistance();
                 } else {
+                    //Si no es el mismo, calculamos la ruta desde la conexion hasta el final
                     if (T_NotD) prevalue = nFrom.getConnections().get(i).getDuration() +  calculateRouteHash(node, nTo, T_NotD);
                     else prevalue = nFrom.getConnections().get(i).getDistance() +  calculateRouteHash(node, nTo, T_NotD);
                 }
+                //sustituimos si el valor calculado es mejor que el que teniamos antes.
                 if (lessvalue > prevalue){
                     lessvalue = prevalue;
                 }
             }
         }
+        //Ponemos que el nodo no ha sido visitado
         nFrom.setVisited(false);
+        //Devolvemos el valor calculado.
         return lessvalue;
     }
 
