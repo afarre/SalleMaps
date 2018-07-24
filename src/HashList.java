@@ -33,6 +33,7 @@ public class HashList<T> {
     private int hash (String clave){
         clave = clave.toLowerCase();
         int value = (int)(clave.charAt(0)) - (int) ('a');
+        if (value < 0) value = -value;
         value = hash(value);
         return value;
     }

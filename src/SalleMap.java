@@ -130,7 +130,7 @@ public class SalleMap {
 
     private int calculateRouteHash (Node nFrom, Node nTo, boolean T_NotD){
         //Valor mas pequeño
-        int lessvalue = 1000000000;
+        int lessvalue = 2000000000;
         //Le ponemos que se visita ese nodo
         nFrom.setVisited(true);
         for (int i = 0; i < nFrom.getConnections().size(); i++){
