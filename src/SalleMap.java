@@ -4,7 +4,6 @@ import com.google.gson.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -84,7 +83,15 @@ public class SalleMap {
                         String to = sc.nextLine();
                         switch (chooseStructure()){
                             case 1:
-                                avl.searchRoute(from, to, type);
+                                AVL.AVLNode fromNode = avl.existsCity(from);
+                                AVL.AVLNode toNode = avl.existsCity(to);
+                                boolean T_NotD = false;
+                                if (type == 2) T_NotD = true;
+                                if (fromNode != null && toNode != null){
+                                    System.out.println(calculateRouteAVL(fromNode, toNode, T_NotD));
+                                }else {
+                                    System.out.println("Either origin or destiny city doesn't exist!");
+                                }
                                 break;
                             case 2:
                                 //Lamamos al buscador de rutas del hash
@@ -108,6 +115,42 @@ public class SalleMap {
             }
         }
     }
+
+    private int calculateRouteAVL(AVL.AVLNode fromNode, AVL.AVLNode toNode, boolean T_NotD) {
+        int lessvalue = 2000000000;
+        //Le ponemos que se visita ese nodo
+        fromNode.getElement().setVisited(true);
+        for (int i = 0; i < fromNode.getElement().getConnections().size(); i++){
+            //Cogemos el nodo de la conexion que estamos mirando
+            AVL.AVLNode node = avl.existsCity(fromNode.getElement().getConnections().get(i).getTo());
+            if (node == null){
+                continue;
+            }
+            int prevalue;
+            //Si el nodo no ha sido visitado, así evitamos el stackoverflowerror
+            if (!node.getElement().isVisited()) {
+                //Si el to es igual que la conexion que estamos mirando
+                if (fromNode.getElement().getConnections().get(i).getTo().equals(toNode.getElement().getCity().getName())) {
+                    //Le añadimos el valor de la conexion al prevalue (valor de ahora mismo)
+                    if (T_NotD) prevalue = fromNode.getElement().getConnections().get(i).getDuration();
+                    else prevalue = fromNode.getElement().getConnections().get(i).getDistance();
+                } else {
+                    //Si no es el mismo, calculamos la ruta desde la conexion hasta el final
+                    if (T_NotD) prevalue = fromNode.getElement().getConnections().get(i).getDuration() +  calculateRouteAVL(node, toNode, T_NotD);
+                    else prevalue = fromNode.getElement().getConnections().get(i).getDistance() +  calculateRouteAVL(node, toNode, T_NotD);
+                }
+                //sustituimos si el valor calculado es mejor que el que teniamos antes.
+                if (lessvalue > prevalue){
+                    lessvalue = prevalue;
+                }
+            }
+        }
+        //Ponemos que el nodo no ha sido visitado
+        fromNode.getElement().setVisited(false);
+        //Devolvemos el valor calculado.
+        return lessvalue;
+    }
+
 
     private void searchRouteHash(String from, String to, int type) {
         //Limpiamos si han sido visitados o no (es un nuevo paramentro que he añadido)
@@ -178,6 +221,14 @@ public class SalleMap {
     }
 
     private void searchCityAVL(String city) {
+        AVL.AVLNode cityNode = avl.existsCity(city);
+        if (cityNode != null){
+            System.out.println("City found. Showing city data:");
+            System.out.println("    " + cityNode.getElement());
+        }else {
+            System.out.println("Not found. Adding new city.");
+            addCityToModel(city);
+        }
        //Buscas la ciudad en el arbol, sino existe la añadimos al modelo con la funcion de addCityToModel();
     }
 
@@ -226,8 +277,8 @@ public class SalleMap {
                         jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lat").getAsDouble(),
                         jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsDouble());
                 Node node = new Node(cityModel);
-                System.out.println("lat: " + cityModel.getLatitude());
-                System.out.println("lon: " + cityModel.getLongitude());
+                //System.out.println("lat: " + cityModel.getLatitude());
+                //System.out.println("lon: " + cityModel.getLongitude());
                 graph.add(node);
                 hash.add(city, node);
             }
@@ -269,7 +320,7 @@ public class SalleMap {
                     }
                 }
                 if (!exists){
-                    System.out.println("aux: " + graph.getLastOne());
+                    //System.out.println("aux: " + graph.getLastOne());
                     graph.getLastOne().getConnections().add(new ConnectionModel (
                             graph.getLastOne().getCity().getName(),
                             graph.get(minvalue).getCity().getName(),
@@ -283,7 +334,7 @@ public class SalleMap {
                             jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(minvalue).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
                     ));
                 }
-                //Actualizamos las demás es1tructuras.
+                //Actualizamos las demás estructuras.
                 createHashList();
                 avl = new AVL(graph);
             }
