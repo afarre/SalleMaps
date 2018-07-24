@@ -1,0 +1,48 @@
+{
+  "cities": [
+    {
+      "name": "Senden",
+      "address": "Senden, Germany",
+      "country": "DE",
+      "latitude": 48.3255759,
+      "longitude": 10.04927
+    },
+    {
+      "name": "Senden",
+      "address": "Senden, Germany",
+      "country": "DE",
+      "latitude": 48.3255759,
+      "longitude": 10.04927
+    },
+    {
+      "name": "Siegburg",
+      "address": "53721 Siegburg, Germany",
+      "country": "DE",
+      "latitude": 50.7998473,
+      "longitude": 7.2074514
+    },
+    {
+      "name": "Senftenberg",
+      "address": "Senftenberg, Germany",
+      "country": "DE",
+      "latitude": 51.51897959999999,
+      "longitude": 13.996908
+    },
+    {
+      "name": "Simmerath",
+      "address": "52152 Simmerath, Germany",
+      "country": "DE",
+      "latitude": 50.6061308,
+      "longitude": 6.299229899999999
+    },
+    {
+      "name": "Suhl",
+      "address": "Suhl, Germany",
+      "country": "DE",
+      "latitude": 50.6076846,
+      "longitude": 10.6881255
+    }
+  ],
+  "connections": [
+  ]
+}
