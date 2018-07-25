@@ -1,250 +1,17 @@
 public class AVL {
     private AVLNode raiz;
-    private MyList<AVLNode> AVLTree;
-    private Graph graph;
-    private boolean firstLink;
-    private boolean secondLink;
-
-    private final static Integer EARTH_LONG = 400750000;
 
     public AVL(Graph graph){
-        AVLTree = new MyList<>();
         int size = graph.size();
         for (int i = 0; i < size; i++){
-            //for (char ch: graph.get(i).getCity().getName().replaceAll("\\s+","").toCharArray()) {
-              //  value = value + ch - 'a' + 1;
-            //}
             add(graph.get(i));
         }
-
-
-/*RR CON CAMBIO DE RAIZ Y NODO CAMBIA RAMA
-        add(4);
-        add(3);
-        add(6);
-        add(5);
-        add(8);
-        add(7);
-        --
-        add(4);
-        add(3);
-        add(7);
-        add(2);
-        add(6);
-        add(9);
-        add(5);
-        add(8);
-        add(10);
-        add(11);
-        */
-
-/*RR CON CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
-        add(1);
-        add(2);
-        add(3);
-        */
-
-/*RR SIN CAMBIO DE RAIZ Y NODO CAMBIA RAMA
-        add(5);
-        add(4);
-        add(7);
-        add(2);
-        add(6);
-        add(9);
-        add(8);
-        add(11);
-        add(12);
-        */
-/*RR SIN CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
-        add(2);
-        add(1);
-        add(3);
-        add(4);
-        add(5);
-        */
-/*RL CON CAMBIO DE RAIZ Y NODO CAMBIA RAMA (DERECHO)
-        add(5);
-        add(4);
-        add(10);
-        add(6);
-        add(12);
-        add(7);
-/*RL CON CAMBIO DE RAIZ Y NODO CAMBIA RAMA (IZQUIERDO)
-        add(5);
-        add(4);
-        add(10);
-        add(7);
-        add(12);
-        add(6);
-        */
-/*RL CON CAMBIO DE RAIZ Y NODO NO CAMBIA DE RAMA
-        add(5);
-        add(7);
-        add(6);
-        */
-/*RL SIN CAMBIO DE RAIZ Y NODO CAMBIA RAMA (DERECHO)
-        add(3);
-        add(2);
-        add(5);
-        add(1);
-        add(4);
-        add(9);
-        add(7);
-        add(10);
-        add(8);
-        */
-/*RL SIN CAMBIO DE RAIZ Y NODO CAMBIA RAMA (IZQUIERDO)
-        add(3);
-        add(2);
-        add(5);
-        add(1);
-        add(4);
-        add(10);
-        add(9);
-        add(11);
-        add(8);
-        */
-/*RL SIN CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
-        add(6);
-        add(5);
-        add(10);
-        add(12);
-        add(11);
-        */
-/*LR CON CAMBIO DE RAIZ Y NODO CAMBIA RAMA (DERECHO)
-        add(7);
-        add(3);
-        add(8);
-        add(2);
-        add(4);
-        add(5);
-        */
-/*LR CON CAMBIO DE RAIZ Y NODO CAMBIA RAMA (IZQUIERDO)
-        add(7);
-        add(3);
-        add(8);
-        add(2);
-        add(5);
-        add(4);
-        */
-/*LR CON CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
-        add(5);
-        add(3);
-        add(4);
-        */
-/*LR SIN CAMBIO DE RAIZ Y NODO CAMBIA RAMA (DERECHO)
-        add(9);
-        add(7);
-        add(12);
-        add(3);
-        add(8);
-        add(10);
-        add(13);
-        add(2);
-        add(4);
-        add(5);
-        */
-/*LR SIN CAMBIO DE RAIZ Y NODO CAMBIA RAMA (IZQUIERDO)
-        add(9);
-        add(7);
-        add(12);
-        add(3);
-        add(8);
-        add(10);
-        add(13);
-        add(2);
-        add(5);
-        add(4);
-        */
-/*LR SIN CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
-        add(6);
-        add(4);
-        add(7);
-        add(2);
-        add(3);
-        */
-/*LL CON CAMBIO DE RAIZ Y NODO CAMBIA RAMA
-        add(6);
-        add(4);
-        add(7);
-        add(3);
-        add(5);
-        add(2);
-        */
-/*LL CON CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
-        add(3);
-        add(2);
-        add(1);
-        */
-/*LL SIN CAMBIO DE RAIZ Y NODO CAMBIA RAMA
-        add(8);
-        add(5);
-        add(9);
-        add(3);
-        add(6);
-        add(10);
-        add(2);
-        add(4);
-        add(1);
-        */
-/*LL SIN CAMBIO DE RAIZ Y NODO NO CAMBIA RAMA
-        add(4);
-        add(3);
-        add(5);
-        add(2);
-        add(1);
-        */
-
-    }
-
-    private void printa(){
-        System.out.println("    Printo la informacio dels " + AVLTree.size() + " nodes:");
-        for (int i = 0; i < AVLTree.size(); i++){
-            AVLNode n = AVLTree.get(i);
-            try {
-                System.out.println("Per al node " + n.getElement().getCity().getName() + " el seu fill dret es " + n.getRight().getElement().getCity().getName() + " i el seu esquerre es " + n.getLeft().getElement().getCity().getName() + " i el seu pare " + n.getParent().getElement().getCity().getName());
-            }catch (NullPointerException ignored){
-                try {
-                    System.out.println("Per al node " + n.getElement().getCity().getName() + " el seu fill dret es " + n.getRight().getElement().getCity().getName() + " i el seu esquerre es " + n.getLeft().getElement().getCity().getName());
-                }catch (NullPointerException ignored2){
-                    try {
-                        System.out.println("Per al node " + n.getElement().getCity().getName() + " el seu fill dret es " + n.getRight().getElement().getCity().getName() + " i el seu pare " + n.getParent().getElement().getCity().getName());
-                    }catch (NullPointerException ignored3){
-                        try {
-                            System.out.println("Per al node " + n.getElement().getCity().getName() + " el seu fill esquerre es " + n.getLeft().getElement().getCity().getName() + " i el seu pare " + n.getParent().getElement().getCity().getName());
-                        }catch (NullPointerException ignored4){
-                            try {
-                                System.out.println("Per al node " + n.getElement().getCity().getName() + " el seu fill dret es " + n.getRight().getElement().getCity().getName());
-                            }catch (NullPointerException e){
-                                try {
-                                    System.out.println("Per al node " + n.getElement().getCity().getName() + " el seu fill esquerre es " + n.getLeft().getElement().getCity().getName());
-                                }catch (NullPointerException ee){
-                                    try {
-                                        System.out.println("Per al node " + n.getElement().getCity().getName() + " el seu pare " + n.getParent().getElement().getCity().getName());
-                                    }catch (NullPointerException eee){
-                                        try{
-                                            System.out.println("Per al nodes " + n.getElement().getCity().getName());
-                                            System.out.println(" el seu fill dret es " + n.getRight().getElement().getCity().getName());
-                                            System.out.println(" i el seu esquerre es " + n.getLeft().getElement().getCity().getName());
-                                            System.out.println(" i el seu pare " + n.getParent().getElement().getCity().getName());
-                                        }catch (NullPointerException eeeeee){
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        System.out.println("raiz = " + raiz.getElement().getCity().getName());
     }
 
     public void add(Node element) {
         if (raiz == null){
             raiz = new AVLNode(element, null);
             //System.out.println("Inserto el node " + raiz.getElement().getCity().getName());
-            AVLTree.add(raiz);
             checkRotations(raiz);
             return;
         }
@@ -281,9 +48,7 @@ public class AVL {
             }
         }
 
-        AVLTree.add(nuevo);
         checkRotations(nuevo);
-        //printa();
     }
 
     private void checkRotations(AVLNode n) {
@@ -723,45 +488,15 @@ public class AVL {
     }
 
 
-    private int castToInteger(String name){
-        int value = 0;
-        for (char ch: name.replaceAll("\\s+","").toCharArray()) {
-            value = value + ch - 'a' + 1;
-        }
-        return value;
-    }
-
-    public void calculateRoute(String from, String to, int type) {
-
-    }
-
-    public boolean searchCity(String name) {
-        return false;
-    }
-
-    public <T> MyList<AVLNode> getTree() {
-        return AVLTree;
-    }
-
     public class AVLNode{
         private Node element;
         private AVLNode right;
         private AVLNode left;
         private AVLNode parent;
-        private int height;
 
         public AVLNode(Node element, AVLNode parent){
             this.element = element;
             this.parent = parent;
-            height = 0;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
         }
 
         public Node getElement() {

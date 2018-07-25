@@ -41,11 +41,12 @@ public class SalleMap {
                 option = menu();
                 switch (option){
                     case 1: //Importar mapa. Lectura json.
-                        importMap();
-                        avl = new AVL(graph);
-                        //Creamos las otras estructuras de datos con el contenido del graph.
-                        createHashList();
-                        jsonIntroduced = true;
+                        if (importMap()){
+                            avl = new AVL(graph);
+                            //Creamos las otras estructuras de datos con el contenido del graph.
+                            createHashList();
+                            jsonIntroduced = true;
+                        }
                         break;
                     case 2: //Buscar ciudad. Sino existe, añadir ciudad que no existe.
                         if (!jsonIntroduced){
@@ -79,7 +80,7 @@ public class SalleMap {
                         System.out.println("Insert new route:");
                         System.out.println("From: ");
                         String from = sc.nextLine();
-                        System.out.print("To: ");
+                        System.out.println("To: ");
                         String to = sc.nextLine();
                         switch (chooseStructure()){
                             case 1:
@@ -88,7 +89,12 @@ public class SalleMap {
                                 boolean T_NotD = false;
                                 if (type == 2) T_NotD = true;
                                 if (fromNode != null && toNode != null){
-                                    System.out.println(calculateRouteAVL(fromNode, toNode, T_NotD));
+                                    int response = calculateRouteAVL(fromNode, toNode, T_NotD);
+                                    if (T_NotD){
+                                        System.out.println("Route duration = " + response + " seconds.");
+                                    }else {
+                                        System.out.println("Route distance = " + response + " meters.");
+                                    }
                                 }else {
                                     System.out.println("Either origin or destiny city doesn't exist!");
                                 }
@@ -166,7 +172,12 @@ public class SalleMap {
         Node nFrom = hash.get(from);
         Node nTo = hash.get(to);
         //Calculamos la ruta
-        System.out.println(calculateRouteHash(nFrom, nTo, T_NotD));
+        int response = calculateRouteHash(nFrom, nTo, T_NotD);
+        if (T_NotD){
+            System.out.println("Route duration = " + response + " seconds.");
+        }else {
+            System.out.println("Route distance = " + response + " meters.");
+        }
 
 
     }
@@ -351,7 +362,7 @@ public class SalleMap {
 
     }
 
-    private void importMap() {
+    private boolean importMap() {
         System.out.println("Introduce JSON file name with the path ([path]/[jsonFileName].json).");
         Scanner sc = new Scanner(System.in);
         String fileEntry = sc.nextLine();
@@ -361,12 +372,15 @@ public class SalleMap {
                 jsonObject = new Gson().fromJson(new FileReader(fileEntry), JsonObject.class);
                 readJson(jsonObject);
                 System.out.println("JSON file imported correctly!");
+                return true;
             } catch (FileNotFoundException e) {
                 System.out.println("Please introduce a valid file.\n");
             }
         } else {
             System.out.println("Invalid file type. The file must be a JSON file.");
+            return false;
         }
+        return false;
     }
 
     private void readJson(JsonObject jsonObject) {
