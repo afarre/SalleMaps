@@ -38,6 +38,7 @@ public class ConnectionModel {
         return duration;
     }
 
+    @Override
     public String toString () {
         return "{" +
                 "from: " + from + "," +

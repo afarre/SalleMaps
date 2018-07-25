@@ -4,6 +4,7 @@ import com.google.gson.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -28,9 +29,6 @@ public class SalleMap {
 
     //Procedimientos y Funciones
 
-    /**
-     * Inicializa el programa.
-     */
     public void init (){
         System.out.println("Welcome to SalleMap.");
         boolean jsonIntroduced = false;
@@ -42,9 +40,17 @@ public class SalleMap {
                 switch (option){
                     case 1: //Importar mapa. Lectura json.
                         if (importMap()){
+                            System.out.print("Creating AVL tree...");
+                            long olddate = new Date().getTime();
                             avl = new AVL(graph);
-                            //Creamos las otras estructuras de datos con el contenido del graph.
+                            long actualdate = new Date().getTime();
+                            System.out.println("(" + (actualdate-olddate) + "ms)");
+
+                            System.out.print("Creating Hash list...");
+                            olddate = new Date().getTime();
                             createHashList();
+                            actualdate = new Date().getTime();
+                            System.out.println("(" + (actualdate-olddate) + "ms)");
                             jsonIntroduced = true;
                         }
                         break;
@@ -89,18 +95,23 @@ public class SalleMap {
                                 boolean T_NotD = false;
                                 if (type == 2) T_NotD = true;
                                 if (fromNode != null && toNode != null){
+                                    System.out.print("\tLooking for route from  " + fromNode.getElement().getCity()
+                                            .getName() + " to " + toNode.getElement().getCity().getName() +
+                                            " in AVL tree...");
+                                    long olddate = new Date().getTime();
                                     int response = calculateRouteAVL(fromNode, toNode, T_NotD);
+                                    long actualdate = new Date().getTime();
+                                    System.out.println("(" + (actualdate-olddate) + "ms)");
                                     if (T_NotD){
-                                        System.out.println("Route duration = " + response + " seconds.");
+                                        System.out.println("\tRoute duration = " + response + " seconds.");
                                     }else {
-                                        System.out.println("Route distance = " + response + " meters.");
+                                        System.out.println("\tRoute distance = " + response + " meters.");
                                     }
                                 }else {
                                     System.out.println("Either origin or destiny city doesn't exist!");
                                 }
                                 break;
                             case 2:
-                                //Lamamos al buscador de rutas del hash
                                 searchRouteHash(from, to, type);
                                 break;
                             case 3:
@@ -157,26 +168,27 @@ public class SalleMap {
         return lessvalue;
     }
 
-
     private void searchRouteHash(String from, String to, int type) {
-        //Limpiamos si han sido visitados o no (es un nuevo paramentro que he añadido)
         hash.cleanVisited();
-        //Comprobamos si exiten los nodos
         if (hash.get(from) == null || hash.get(to) == null){
             System.out.println("Error! Either origin city or destination city where not found. Please check if spelling is correct.");
             return;
         }
         boolean T_NotD = false;
         if (type == 2) T_NotD = true;
-        //Cogemos los nodos de salida y llegada
         Node nFrom = hash.get(from);
         Node nTo = hash.get(to);
-        //Calculamos la ruta
+        System.out.print("\tLooking for route from  " + nFrom.getCity().getName() +
+                " to " + nTo.getCity().getName() +
+                " in Hash list...");
+        long olddate = new Date().getTime();
         int response = calculateRouteHash(nFrom, nTo, T_NotD);
+        long actualdate = new Date().getTime();
+        System.out.println("(" + (actualdate-olddate) + "ms)");
         if (T_NotD){
-            System.out.println("Route duration = " + response + " seconds.");
+            System.out.println("\tRoute duration = " + response + " seconds.");
         }else {
-            System.out.println("Route distance = " + response + " meters.");
+            System.out.println("\tRoute distance = " + response + " meters.");
         }
 
 
@@ -217,10 +229,16 @@ public class SalleMap {
 
     private void searchCityHash(final String city) {
         Node node;
-        if ((node = hash.get(city)) == null){
+        System.out.print("\tLooking for " + city + " in Hash list...");
+        long olddate = new Date().getTime();
+        node = hash.get(city);
+        long actualdate = new Date().getTime();
+        System.out.println("(" + (actualdate-olddate) + "ms)");
+        if (node == null){
             addCityToModel(city);
         } else {
-            System.out.println(node.toString());
+            System.out.println("\tCity found. Showing city data:");
+            System.out.println("\t\t" + node.toString());
         }
     }
 
@@ -232,15 +250,17 @@ public class SalleMap {
     }
 
     private void searchCityAVL(String city) {
+        System.out.print("\tLooking for " + city + " in AVL tree...");
+        long olddate = new Date().getTime();
         AVL.AVLNode cityNode = avl.existsCity(city);
+        long actualdate = new Date().getTime();
+        System.out.println("(" + (actualdate-olddate) + "ms)");
         if (cityNode != null){
-            System.out.println("City found. Showing city data:");
-            System.out.println("    " + cityNode.getElement());
+            System.out.println("\tCity found. Showing city data:");
+            System.out.println("\t\t" + cityNode.getElement());
         }else {
-            System.out.println("Not found. Adding new city.");
             addCityToModel(city);
         }
-       //Buscas la ciudad en el arbol, sino existe la añadimos al modelo con la funcion de addCityToModel();
     }
 
     private int chooseStructure() throws InputMismatchException{
@@ -259,22 +279,33 @@ public class SalleMap {
     }
 
     private void searchCity(String city) {
+        System.out.print("\tLooking for " + city + " in Graph...");
+        long olddate = new Date().getTime();
         int size = graph.size();
         boolean flag = false;
+        Node n = null;
         for (int i = 0; i < size; i++){
-            Node n = graph.get(i);
+            n = graph.get(i);
             CityModel cityModel = n.getCity();
             if (city.toLowerCase().equals(cityModel.getName().toLowerCase())) {
                 flag = true;
                 break;
             }
         }
+        long actualdate = new Date().getTime();
+        System.out.println("(" + (actualdate-olddate) + "ms)");
         if (!flag){
             addCityToModel(city);
+        } else {
+            System.out.println("\tCity found. Showing city data:");
+            System.out.println("\t\t" + n.toString());
         }
     }
 
     private void addCityToModel(final String city) {
+        System.out.println("\tNot found. Adding new city.");
+        System.out.print("\tAdding " + city + " in structures...");
+        long olddate = new Date().getTime();
         WSGoogleMaps.getInstance().setApiKey(API_KEY);
         HttpRequest.HttpReply httpReply = new HttpRequest.HttpReply() {
             @Override
@@ -345,9 +376,6 @@ public class SalleMap {
                             jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(minvalue).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
                     ));
                 }
-                //Actualizamos las demás estructuras.
-                createHashList();
-                avl = new AVL(graph);
             }
 
             @Override
@@ -357,9 +385,14 @@ public class SalleMap {
         };
 
         WSGoogleMaps.getInstance().distance(graph.getLastOne().getCity().getLatitude(), graph.getLastOne().getCity().getLongitude(), graph.getLats(),graph.getLongs(), httpReply);
+        //Actualizamos las demás estructuras.
+        createHashList();
+        avl = new AVL(graph);
 
-        System.out.println(graph.toString());
+        long actualdate = new Date().getTime();
+        System.out.println("(" + (actualdate-olddate) + "ms)");
 
+        System.out.println("\tAdded:\n\t\t" + graph.getLastOne().toString());
     }
 
     private boolean importMap() {
@@ -369,12 +402,16 @@ public class SalleMap {
         JsonObject jsonObject = null;
         if (fileEntry.endsWith("json")){
             try {
+                System.out.println("JSON file imported correctly!");
+                System.out.print("Creating Graph...");
+                long olddate = new Date().getTime();
                 jsonObject = new Gson().fromJson(new FileReader(fileEntry), JsonObject.class);
                 readJson(jsonObject);
-                System.out.println("JSON file imported correctly!");
+                long actualdate = new Date().getTime();
+                System.out.println("(" + (actualdate-olddate) + "ms)");
                 return true;
             } catch (FileNotFoundException e) {
-                System.out.println("Please introduce a valid file.\n");
+                System.out.println("\nPlease introduce a valid file.\n");
             }
         } else {
             System.out.println("Invalid file type. The file must be a JSON file.");
@@ -412,7 +449,6 @@ public class SalleMap {
                 break;
         }
         if (graph.checkCities(from, to)){
-            //TODO: COMPROBAR SI HACE BIEN. AÑADIR PARIS Y HACER 1 Y 2 CON LUGO
             graph.dijkstra(from, to, T_NotD);
         }else {
             System.out.println("Error! Either origin city or destination city where not found. Please check if spelling is correct.");
@@ -420,11 +456,6 @@ public class SalleMap {
 
     }
 
-
-    /**
-     * Menu pricipal del programa.
-     * @return      Opción donde el usuario quiere aceder.
-     */
     private int menu () throws InputMismatchException{
         Scanner sc = new Scanner (System.in);
         int value;

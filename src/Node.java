@@ -21,6 +21,7 @@ public class Node {
         return connections;
     }
 
+    @Override
     public String toString (){
         return "{city: " + city.toString() + "," +
                 "connections: " + connections.toString() +

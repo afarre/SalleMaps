@@ -33,7 +33,7 @@ public class AVL {
                     //System.out.println("Fico " + nuevo.getElement().getCity().getName() + " com a esquerra de " + parent.getElement().getCity().getName());
                     parent.setLeft(nuevo);
                     nuevo.setParent(parent);
-                    System.out.println("Adding " + nuevo.getElement().getCity().getName() + ".");
+                    //System.out.println("Adding " + nuevo.getElement().getCity().getName() + ".");
                 }
 
             } else {
@@ -43,7 +43,7 @@ public class AVL {
                     //System.out.println("Fico " + nuevo.getElement().getCity().getName() + " com a dreta de " + parent.getElement().getCity().getName());
                     parent.setRight(nuevo);
                     nuevo.setParent(parent);
-                    System.out.println("Adding " + nuevo.getElement().getCity().getName() + ".");
+                    //System.out.println("Adding " + nuevo.getElement().getCity().getName() + ".");
                 }
             }
         }
@@ -486,7 +486,6 @@ public class AVL {
         }
         return null;
     }
-
 
     public class AVLNode{
         private Node element;

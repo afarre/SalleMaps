@@ -13,14 +13,14 @@ public class HashList<T> {
         current = 0;
     }
 
-    public synchronized void add (String clave, T valor){
+    public void add (String clave, T valor){
         if (current == list.length){
             System.out.println("The HashList hasn't more capacity");
         } else {
             int value = hash(clave);
             while (list[value] != null){
                 if (list[value].getKey().equals(clave)){
-                    System.out.println("The key (" + clave +") is in the HashTable, you can't input again.");
+                    System.out.print("\nThe key (" + clave +") is in the HashTable, you can't input again.");
                     return;
                 }
                 value = hash(value);

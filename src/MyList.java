@@ -35,6 +35,7 @@ public class MyList<T> extends AbstractList<T> {
         numElements = 1;
     }
 
+    @Override
     public boolean add (T e){
         if (list.length == numElements){
             T[] aux = (T[]) new Object[list.length * 2];
@@ -46,6 +47,7 @@ public class MyList<T> extends AbstractList<T> {
         return true;
     }
 
+    @Override
     public T get (int i){
         return list[i];
     }
@@ -54,6 +56,7 @@ public class MyList<T> extends AbstractList<T> {
         return list;
     }
 
+    @Override
     public int size (){
         return numElements;
     }

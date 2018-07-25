@@ -1,3 +1,5 @@
+import java.util.Date;
+
 public class Graph {
 
     private final static Integer EARTH_LONG = 400750000;
@@ -25,7 +27,6 @@ public class Graph {
     public boolean checkCities (String from, String to){
         boolean bfrom = false, bto = false;
         for (int i = 0; i < graph.size(); i++){
-            //TODO: IMPLEMENTAR CON IGNORECASE Y NO TOLOWERCASE
             if (from.toLowerCase().equals(graph.get(i).getCity().getName().toLowerCase())){
                 bfrom = true;
             }
@@ -60,7 +61,10 @@ public class Graph {
         way[pfrom] = -1;
 
         //Dijkstra
-
+        System.out.print("\tLooking for route from  " + nfrom.getCity().getName() +
+                " to " + nto.getCity().getName() +
+                " in Graph with Dijkstra...");
+        long olddate = new Date().getTime();
         while(!(pfrom == pto)){
             int vlow = EARTH_LONG;
             int plow = 0;
@@ -90,6 +94,8 @@ public class Graph {
             pfrom = plow;
             nfrom = graph.get(pfrom);
         }
+        long actualdate = new Date().getTime();
+        System.out.println("(" + (actualdate-olddate) + "ms)");
 
         System.out.print("Camino: ");
         boolean finish = false;
@@ -106,8 +112,8 @@ public class Graph {
             System.out.print(yaw[i-1] + ", ");
         }
         System.out.println(yaw[0] + ".");
-        System.out.println("Value=" + value[pfrom]);
-
+        if (T_NotD) System.out.println("\tRoute duration = " + value[pfrom] + " seconds.");
+        else System.out.println("\tRoute duration = " + value[pfrom] + " meters.");
     }
 
     public int size (){
