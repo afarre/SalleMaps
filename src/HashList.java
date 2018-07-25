@@ -1,5 +1,3 @@
-import java.lang.reflect.Array;
-
 public class HashList<T> {
     public final static int DEFAULTCAPACITY = 10000;
 
@@ -20,7 +18,7 @@ public class HashList<T> {
             int value = hash(clave);
             while (list[value] != null){
                 if (list[value].getKey().equals(clave)){
-                    System.out.print("\nThe key (" + clave +") is in the HashTable, you can't input again.");
+                    //System.out.print("\nThe key (" + clave +") is in the HashTable, you can't input again.");
                     return;
                 }
                 value = hash(value);
@@ -62,10 +60,6 @@ public class HashList<T> {
             value = hash(value);
         }
         return list[value].getValue();
-    }
-
-    public int getCurrent() {
-        return current;
     }
 
     @Override

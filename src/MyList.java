@@ -11,30 +11,6 @@ public class MyList<T> extends AbstractList<T> {
         numElements = 0;
     }
 
-    public MyList (int i){
-        list = (T[]) new Object[i];
-        numElements = 0;
-    }
-
-    public MyList(T[] content){
-        if (content.length < INITIALCAPACITY){
-            list = (T[]) new Object[INITIALCAPACITY];
-        } else {
-            list = (T[]) new Object[content.length];
-        }
-
-        for (T o: content){
-            add(o);
-        }
-        numElements = content.length;
-    }
-
-    public MyList (T e){
-        list = (T[]) new Object[INITIALCAPACITY];
-        add(e);
-        numElements = 1;
-    }
-
     @Override
     public boolean add (T e){
         if (list.length == numElements){

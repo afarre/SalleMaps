@@ -137,7 +137,8 @@ public class SalleMap {
         int lessvalue = 2000000000;
         //Le ponemos que se visita ese nodo
         fromNode.getElement().setVisited(true);
-        for (int i = 0; i < fromNode.getElement().getConnections().size(); i++){
+        int connectionsSize = fromNode.getElement().getConnections().size();
+        for (int i = 0; i < connectionsSize; i++){
             //Cogemos el nodo de la conexion que estamos mirando
             AVL.AVLNode node = avl.existsCity(fromNode.getElement().getConnections().get(i).getTo());
             if (node == null){
@@ -199,7 +200,8 @@ public class SalleMap {
         int lessvalue = 2000000000;
         //Le ponemos que se visita ese nodo
         nFrom.setVisited(true);
-        for (int i = 0; i < nFrom.getConnections().size(); i++){
+        int connectionsSize = nFrom.getConnections().size();
+        for (int i = 0; i < connectionsSize; i++){
             //Cogemos el nodo de la conexion que estamos mirando
             Node node = hash.get(nFrom.getConnections().get(i).getTo());
             int prevalue;
@@ -244,7 +246,8 @@ public class SalleMap {
 
     private void createHashList() {
         hash = new HashList();
-        for (int i = 0; i < graph.size(); i++){
+        int graphSize = graph.size();
+        for (int i = 0; i < graphSize; i++){
             hash.add(graph.get(i).getCity().getName(), graph.get(i));
         }
     }
@@ -340,7 +343,8 @@ public class SalleMap {
                 int mindistance = EARTH_LONG;
                 int minvalue = 0;
                 boolean exists = false;
-                for (int i = 0; i < jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().size()-1; i++){
+                int size = jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().size() - 1;
+                for (int i = 0; i < size; i++){
                     int distance = jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(i).getAsJsonObject().get("distance").getAsJsonObject().get("value").getAsInt();
                     if (MIN_DISTANCE > distance){
                         graph.getLastOne().getConnections().add(new ConnectionModel (

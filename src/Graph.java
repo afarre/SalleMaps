@@ -26,7 +26,8 @@ public class Graph {
 
     public boolean checkCities (String from, String to){
         boolean bfrom = false, bto = false;
-        for (int i = 0; i < graph.size(); i++){
+        int grapSize = graph.size();
+        for (int i = 0; i < grapSize; i++){
             if (from.toLowerCase().equals(graph.get(i).getCity().getName().toLowerCase())){
                 bfrom = true;
             }
@@ -42,7 +43,8 @@ public class Graph {
 
         Node nfrom = null, nto = null;
         int pfrom = 0, pto = 0;
-        for (int i = 0; i < graph.size(); i++){
+        int grapSize = graph.size();
+        for (int i = 0; i < grapSize; i++){
             if (from.toLowerCase().equals(graph.get(i).getCity().getName().toLowerCase())){
                 nfrom = graph.get(i);
                 pfrom = i;
@@ -52,12 +54,12 @@ public class Graph {
                 pto = i;
             }
         }
-        int[] value = new int[graph.size()];
+        int[] value = new int[grapSize];
         for (int i = 0; i < value.length; i++){
             value[i] = EARTH_LONG;
         }
         value[pfrom] = 0;
-        int[] way = new int [graph.size()];
+        int[] way = new int [grapSize];
         way[pfrom] = -1;
 
         //Dijkstra
@@ -68,9 +70,10 @@ public class Graph {
         while(!(pfrom == pto)){
             int vlow = EARTH_LONG;
             int plow = 0;
-            for (int i = 0; i < graph.size(); i++){
+            for (int i = 0; i < grapSize; i++){
                 if (value[i] != -1 && i != pfrom) {
-                    for (int j = 0; j < nfrom.getConnections().size(); j++) {
+                    int connectionsSize = nfrom.getConnections().size();
+                    for (int j = 0; j < connectionsSize; j++) {
                         if (graph.get(i).getCity().getName().toLowerCase().equals(nfrom.getConnections().get(j).getTo().toLowerCase())) {
                             if (T_NotD) {
                                 if (value[i] > nfrom.getConnections().get(j).getDuration() + value[pfrom]) {
@@ -129,8 +132,9 @@ public class Graph {
     }
 
     public double[] getLats (){
-        double[] lats = new double[graph.size()];
-        for (int i = 0; i < graph.size(); i++){
+        int graphSize = graph.size();
+        double[] lats = new double[graphSize];
+        for (int i = 0; i < graphSize; i++){
             lats[i] = graph.get(i).getCity().getLatitude();
         }
         return lats;

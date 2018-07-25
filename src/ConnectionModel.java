@@ -6,8 +6,6 @@ public class ConnectionModel {
     private int distance;
     private int duration;
 
-    public ConnectionModel (){}
-
     public ConnectionModel(String from, String to, int distance, int duration){
         this.from = from;
         this.to = to;
