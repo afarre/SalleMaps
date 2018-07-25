@@ -56,7 +56,6 @@ public class HashList<T> {
             }
         }
         if (!existKey) {
-            System.out.println("The Key doesn't exist on the HashTable.");
             return null;
         }
         while (list[value] == null || !(list[value].getKey().equals(key))){
@@ -82,16 +81,6 @@ public class HashList<T> {
             }
         }
         return sb.toString();
-    }
-
-    public static void main (String[] args){
-        HashList<Integer> asdf = new HashList<>();
-        asdf.add("a", 1);
-        asdf.add("b", 2);
-        asdf.add("c", 5);
-        asdf.add("d", 4);
-        asdf.add("z", 3);
-        asdf.get("e");
     }
 
     public void cleanVisited() {
