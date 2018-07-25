@@ -306,8 +306,9 @@ public class SalleMap {
     }
 
     private void addCityToModel(final String city) {
+        boolean exists = true;
         System.out.println("\tNot found. Adding new city.");
-        System.out.print("\tAdding " + city + " in structures...");
+        System.out.println("\tAdding " + city + " in structures...");
         long olddate = new Date().getTime();
         WSGoogleMaps.getInstance().setApiKey(API_KEY);
         HttpRequest.HttpReply httpReply = new HttpRequest.HttpReply() {
@@ -315,17 +316,21 @@ public class SalleMap {
             public void onSuccess(String s) {
                 JsonElement jelement = new JsonParser().parse(s);
                 JsonObject jobject = jelement.getAsJsonObject();
-                CityModel cityModel = new CityModel(
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(0).getAsJsonObject().get("long_name").getAsString(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("formatted_address").getAsString(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(3).getAsJsonObject().get("long_name").getAsString(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lat").getAsDouble(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsDouble());
-                Node node = new Node(cityModel);
-                //System.out.println("lat: " + cityModel.getLatitude());
-                //System.out.println("lon: " + cityModel.getLongitude());
-                graph.add(node);
-                hash.add(city, node);
+                if (jobject.get("status").getAsString().equals("ZERO_RESULTS")){
+                    System.out.println("Error! The introduced city was not found. Please check correct spelling.");
+                }else {
+                    CityModel cityModel = new CityModel(
+                            jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(0).getAsJsonObject().get("long_name").getAsString(),
+                            jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("formatted_address").getAsString(),
+                            jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(3).getAsJsonObject().get("long_name").getAsString(),
+                            jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lat").getAsDouble(),
+                            jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsDouble());
+                    Node node = new Node(cityModel);
+                    //System.out.println("lat: " + cityModel.getLatitude());
+                    //System.out.println("lon: " + cityModel.getLongitude());
+                    graph.add(node);
+                    hash.add(city, node);
+                }
             }
 
             @Override
