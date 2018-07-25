@@ -22,6 +22,7 @@ public class SalleMap {
     private final static String API_KEY = "AIzaSyCMG_IEevGb9kFUfR_DVgQIT0Gfqrz3S_I";
     private final static Integer MIN_DISTANCE = 300000;
     private final static Integer EARTH_LONG = 400750000;
+    private boolean found = true;
 
 
     //Constructor
@@ -313,24 +314,30 @@ public class SalleMap {
         HttpRequest.HttpReply httpReply = new HttpRequest.HttpReply() {
             @Override
             public void onSuccess(String s) {
-                JsonElement jelement = new JsonParser().parse(s);
-                JsonObject jobject = jelement.getAsJsonObject();
-                CityModel cityModel = new CityModel(
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(0).getAsJsonObject().get("long_name").getAsString(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("formatted_address").getAsString(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(3).getAsJsonObject().get("long_name").getAsString(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lat").getAsDouble(),
-                        jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsDouble());
-                Node node = new Node(cityModel);
-                //System.out.println("lat: " + cityModel.getLatitude());
-                //System.out.println("lon: " + cityModel.getLongitude());
-                graph.add(node);
-                hash.add(city, node);
+                try {
+                    JsonElement jelement = new JsonParser().parse(s);
+                    JsonObject jobject = jelement.getAsJsonObject();
+                    CityModel cityModel = new CityModel(
+                            jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(0).getAsJsonObject().get("long_name").getAsString(),
+                            jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("formatted_address").getAsString(),
+                            jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("address_components").getAsJsonArray().get(3).getAsJsonObject().get("long_name").getAsString(),
+                            jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lat").getAsDouble(),
+                            jobject.get("results").getAsJsonArray().get(0).getAsJsonObject().getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsDouble());
+                    Node node = new Node(cityModel);
+                    //System.out.println("lat: " + cityModel.getLatitude());
+                    //System.out.println("lon: " + cityModel.getLongitude());
+                    graph.add(node);
+                    hash.add(city, node);
+                } catch (IndexOutOfBoundsException ioobe) {
+                    found = false;
+                    System.out.println("\n\tWe couldn't found the city.");
+                }
             }
 
             @Override
             public void onError(String s) {
-                System.out.println("We couldn't found the city.");
+                found = false;
+                System.out.println("\n\tWe couldn't found the city.");
             }
         };
 
@@ -338,53 +345,58 @@ public class SalleMap {
         httpReply = new HttpRequest.HttpReply() {
             @Override
             public void onSuccess(String s) {
-                JsonElement jelement = new JsonParser().parse(s);
-                JsonObject jobject = jelement.getAsJsonObject();
-                int mindistance = EARTH_LONG;
-                int minvalue = 0;
-                boolean exists = false;
-                int size = jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().size() - 1;
-                for (int i = 0; i < size; i++){
-                    int distance = jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(i).getAsJsonObject().get("distance").getAsJsonObject().get("value").getAsInt();
-                    if (MIN_DISTANCE > distance){
-                        graph.getLastOne().getConnections().add(new ConnectionModel (
-                                graph.getLastOne().getCity().getName(),
-                                graph.get(i).getCity().getName(),
-                                distance,
-                                jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(i).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
-                        ));
-                        graph.get(i).getConnections().add(new ConnectionModel(
-                                graph.get(i).getCity().getName(),
-                                graph.getLastOne().getCity().getName(),
-                                distance,
-                                jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(i).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
-                        ));
-                        exists = true;
-                    } else if (mindistance > distance){
-                        mindistance = distance;
-                        minvalue = i;
+                try {
+                    JsonElement jelement = new JsonParser().parse(s);
+                    JsonObject jobject = jelement.getAsJsonObject();
+                    int mindistance = EARTH_LONG;
+                    int minvalue = 0;
+                    boolean exists = false;
+                    int size = jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().size() - 1;
+                    for (int i = 0; i < size; i++) {
+                        int distance = jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(i).getAsJsonObject().get("distance").getAsJsonObject().get("value").getAsInt();
+                        if (MIN_DISTANCE > distance) {
+                            graph.getLastOne().getConnections().add(new ConnectionModel(
+                                    graph.getLastOne().getCity().getName(),
+                                    graph.get(i).getCity().getName(),
+                                    distance,
+                                    jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(i).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
+                            ));
+                            graph.get(i).getConnections().add(new ConnectionModel(
+                                    graph.get(i).getCity().getName(),
+                                    graph.getLastOne().getCity().getName(),
+                                    distance,
+                                    jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(i).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
+                            ));
+                            exists = true;
+                        } else if (mindistance > distance) {
+                            mindistance = distance;
+                            minvalue = i;
+                        }
                     }
-                }
-                if (!exists){
-                    //System.out.println("aux: " + graph.getLastOne());
-                    graph.getLastOne().getConnections().add(new ConnectionModel (
-                            graph.getLastOne().getCity().getName(),
-                            graph.get(minvalue).getCity().getName(),
-                            mindistance,
-                            jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(minvalue).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
-                    ));
-                    graph.get(minvalue).getConnections().add(new ConnectionModel(
-                            graph.get(minvalue).getCity().getName(),
-                            graph.getLastOne().getCity().getName(),
-                            mindistance,
-                            jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(minvalue).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
-                    ));
+                    if (!exists) {
+                        //System.out.println("aux: " + graph.getLastOne());
+                        graph.getLastOne().getConnections().add(new ConnectionModel(
+                                graph.getLastOne().getCity().getName(),
+                                graph.get(minvalue).getCity().getName(),
+                                mindistance,
+                                jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(minvalue).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
+                        ));
+                        graph.get(minvalue).getConnections().add(new ConnectionModel(
+                                graph.get(minvalue).getCity().getName(),
+                                graph.getLastOne().getCity().getName(),
+                                mindistance,
+                                jobject.get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray().get(minvalue).getAsJsonObject().get("duration").getAsJsonObject().get("value").getAsInt()
+                        ));
+                    }
+                } catch (Exception e){
+                    found = false;
+                    System.out.println("\n\tWe couldn't found the city.");
                 }
             }
 
             @Override
             public void onError(String s) {
-                System.out.println("We couldn't found the city.");
+                System.out.println("\n\tWe couldn't found the city.");
             }
         };
 
@@ -395,8 +407,7 @@ public class SalleMap {
 
         long actualdate = new Date().getTime();
         System.out.println("(" + (actualdate-olddate) + "ms)");
-
-        System.out.println("\tAdded:\n\t\t" + graph.getLastOne().toString());
+        if (found) System.out.println("\tAdded:\n\t\t" + graph.getLastOne().toString());
     }
 
     private boolean importMap() {
